@@ -33,6 +33,41 @@ if BUNDLE_ID:
             open(gradle, "w", encoding="utf-8").write(s)
             print(f"✓ Android applicationId = {BUNDLE_ID}")
 
+# ---------- Android: compile every plugin against a recent SDK ----------
+# Some plugins (e.g. file_picker) still declare an older compileSdk, which newer
+# AndroidX libraries reject ("requires ... compile against version 36 or later").
+COMPILE_SDK = 36
+MARK = "// rabbi-danon: force compileSdk"
+KTS = f"""
+{MARK}
+subprojects {{
+    val forceCompileSdk: Project.() -> Unit = {{
+        extensions.findByName("android")?.withGroovyBuilder {{ "compileSdkVersion"({COMPILE_SDK}) }}
+    }}
+    if (state.executed) forceCompileSdk() else afterEvaluate {{ forceCompileSdk() }}
+}}
+"""
+GROOVY = f"""
+{MARK}
+subprojects {{
+    def forceCompileSdk = {{
+        if (project.extensions.findByName("android") != null) {{
+            project.android.compileSdkVersion {COMPILE_SDK}
+        }}
+    }}
+    if (project.state.executed) {{ forceCompileSdk() }} else {{ project.afterEvaluate {{ forceCompileSdk() }} }}
+}}
+"""
+for root_gradle, block in (("android/build.gradle.kts", KTS), ("android/build.gradle", GROOVY)):
+    if os.path.exists(root_gradle):
+        s = open(root_gradle, encoding="utf-8").read()
+        if MARK not in s:
+            # must come before the template's `evaluationDependsOn(":app")` block
+            i = s.find("subprojects {")
+            s = (s[:i] + block.lstrip("\n") + "\n" + s[i:]) if i >= 0 else s + block
+            open(root_gradle, "w", encoding="utf-8").write(s)
+        print(f"✓ {root_gradle}: compileSdk {COMPILE_SDK} for all plugins")
+
 # ---------- iOS ----------
 plist_path = "ios/Runner/Info.plist"
 if os.path.exists(plist_path):
