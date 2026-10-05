@@ -1,0 +1,658 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0f1a28">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>ניהול האתר | הרב יוסף דנון</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1a28'/%3E%3Cpath d='M14 18q9-3 18 4 9-7 18-4v29q-9-3-18 4-9-7-18-4z' fill='none' stroke='%23d6b170' stroke-width='4' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@700&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0f1a28;--card:#1a2a40;--card2:#0e1828;--line:#2c3f5a;--text:#f6f1e6;--muted:#b9c4d2;--gold:#d6b170;--gold2:#f0d49b;--ok:#3fb27f;--bad:#e5645a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Heebo,Arial,sans-serif;line-height:1.5}
+.wrap{width:min(100% - 24px,720px);margin:0 auto;padding:18px 0 80px}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:14px}
+h1{font-family:"Frank Ruhl Libre",serif;font-size:1.6rem;margin:0}
+.top a{color:var(--gold);font-size:.95rem}
+.tabs{position:sticky;top:0;z-index:5;background:var(--bg);display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:8px 0 12px}
+.tabs button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:14px;padding:12px;font:inherit;font-weight:700;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--gold);color:#1a1409;border-color:var(--gold)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-bottom:14px}
+.card h2{font-size:1.08rem;margin:0 0 6px;color:var(--gold)}
+.hint{color:var(--muted);font-size:.9rem;margin:0 0 10px}
+label.lbl{display:block;font-size:.9rem;color:var(--muted);margin:12px 0 6px}
+input,select,textarea,button{font:inherit}
+input[type=password],input[type=text],input[type=search],select,textarea{width:100%;background:var(--card2);color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px;font-size:1rem}
+textarea{min-height:60px;resize:vertical}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:13px 18px;font-weight:700;cursor:pointer;background:var(--gold);color:#1a1409;width:100%;margin-top:12px;font-size:1.02rem}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn.sm{width:auto;padding:8px 14px;margin:0;font-size:.92rem}
+.btn:disabled{opacity:.5}
+.pick{display:block;border:2px dashed #d6b17088;border-radius:16px;padding:22px 14px;text-align:center;cursor:pointer;color:var(--gold2);font-weight:700}
+.pick input{display:none}
+.msg{margin:10px 0 0;font-size:.95rem}
+.ok{color:var(--ok)} .err{color:var(--bad)} .muted{color:var(--muted)}
+.hidden{display:none!important}
+/* staged uploads */
+.stage{display:grid;gap:8px;margin-top:12px}
+.srow{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:6px}
+.srow .nm{font-size:.85rem;color:var(--muted);word-break:break-all}
+.srow .ctl{display:grid;grid-template-columns:1fr auto;gap:6px}
+.srow .ctl .w{grid-column:1/-1}
+.srow select{padding:8px;font-size:.9rem}
+.bar{height:5px;background:#233349;border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+.x{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:9px;padding:0 10px;cursor:pointer}
+/* weeks list */
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.filters button{border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:999px;padding:6px 12px;font-size:.88rem;cursor:pointer}
+.filters button[aria-pressed=true]{background:var(--gold2);color:#1a1409;border-color:var(--gold2)}
+.week{background:var(--card);border:1px solid var(--line);border-radius:16px;margin-bottom:8px;overflow:hidden}
+.week.cur{border-color:#d6b17099}
+.wh{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;padding:12px 14px;cursor:pointer}
+.wt{font-weight:700}
+.wd{font-size:.82rem;color:var(--muted)}
+.wq{font-size:.86rem;color:var(--gold2);margin-top:2px}
+.badges{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;max-width:170px}
+.b{font-size:.75rem;border-radius:999px;padding:2px 8px;border:1px solid var(--line);white-space:nowrap}
+.b.on{background:#3fb27f22;border-color:#3fb27f88;color:#9fe3c2}
+.b.off{color:#6f7f95;border-style:dashed}
+.wbody{border-top:1px solid var(--line);padding:12px 14px 14px;display:none}
+.week.open .wbody{display:block}
+.sec{margin-top:14px}
+.sec h3{font-size:.95rem;margin:0 0 8px;color:var(--gold)}
+.clips{display:grid;gap:8px}
+.clip{display:grid;grid-template-columns:78px 1fr;gap:10px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px}
+.clip video{width:78px;height:104px;object-fit:cover;border-radius:8px;background:#000}
+.clip .row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.clip .row2{display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;margin-top:6px}
+.clip select,.clip input{padding:7px 8px;font-size:.88rem;border-radius:9px}
+.del{background:transparent;border:1px solid #e5645a88;color:var(--bad);border-radius:9px;padding:6px 12px;cursor:pointer;font-size:.85rem}
+.fixed{font-size:.8rem;color:var(--muted)}
+.cm{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.cm li{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:.9rem}
+.cm .g{font-size:.75rem;color:var(--gold)}
+.cm button{float:left;margin-right:8px}
+.srow select.k option[value=voice]{color:var(--gold2)}
+a{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><h1>ניהול האתר</h1><a href="/" target="_blank">לאתר ←</a></header>
+
+  <div class="card" id="login">
+    <h2>כניסה</h2>
+    <label class="lbl" for="pw">סיסמה</label>
+    <input type="password" id="pw" autocomplete="current-password">
+    <button class="btn" id="loginBtn">כניסה</button>
+    <p class="msg err" id="loginErr"></p>
+  </div>
+
+  <div id="app" class="hidden">
+    <nav class="tabs" role="tablist">
+      <button role="tab" data-tab="upload" aria-selected="true">⬆ העלאה</button>
+      <button role="tab" data-tab="weeks" aria-selected="false">📅 כל השבתות</button>
+    </nav>
+
+    <!-- ============ UPLOAD TAB ============ -->
+    <section id="tab-upload">
+      <div class="card">
+        <h2>1. ייצוא מהוואטסאפ (הכי קל)</h2>
+        <p class="hint">בקבוצה: שם הקבוצה ← <b>ייצוא צ'אט</b> ← <b>עם מדיה</b>. מעלים כאן את הקובץ. <b>הכול משתבץ לבד</b> לפי השבתות: הסרטונים של הרב (שיעור / תשובה) והתגובות של הקבוצה – בלי שמות.</p>
+        <label class="lbl" for="grp">הקבוצה</label>
+        <select id="grp"><option>קבוצת השיעור</option><option>קבוצת הנשים</option><option>קבוצת הגברים</option><option>לכבוד שבת המלכה</option></select>
+        <label style="display:flex;gap:8px;align-items:center;margin-top:12px;font-size:.95rem"><input type="checkbox" id="allMsgs" style="width:20px;height:20px"> לייבא את <b>כל</b> התגובות של החברים (לא רק תשובות לשאלה)</label>
+        <label class="pick" style="margin-top:12px">💬 בחירת קובץ הייצוא (zip) – או כל הקבצים מתיקיית הייצוא
+          <input type="file" id="chat" accept=".txt,.zip,text/plain,application/zip,video/*,audio/*,.opus" multiple>
+        </label>
+        <p class="msg" id="chatMsg"></p>
+        <button class="btn hidden" id="pubChat">פרסום באתר</button>
+      </div>
+
+      <div class="card">
+        <h2>2. סרטונים והקלטות מהמחשב / מהגלריה</h2>
+        <p class="hint">בוחרים כמה קבצים שרוצים – גם ישנים, גם כאלה שהורדת מהוואטסאפ המקושר. <b>סרטונים</b> נכנסים כשיעור/תשובה, <b>הקלטות קוליות</b> של חברי הקבוצה נכנסות כ<b>תגובה קולית</b>. השבת מזוהה לפי התאריך בשם הקובץ; אפשר לשנות לפני ההעלאה.</p>
+        <label class="lbl">הקלטות קוליות שבחרתי הן של:</label>
+        <select id="aud"><option value="rabbi">🎙 הרב – שיעור בהקלטה</option><option value="voice">💬 חברי הקבוצה – תגובה קולית</option></select>
+        <label class="lbl" for="grp2">הקבוצה (בשביל תגובות קוליות)</label>
+        <select id="grp2"><option>קבוצת השיעור</option><option>קבוצת הנשים</option><option>קבוצת הגברים</option><option>לכבוד שבת המלכה</option></select>
+        <label class="pick" style="margin-top:12px">📹🎙 בחירת סרטונים והקלטות
+          <input type="file" id="files" accept="video/*,audio/*,.opus,.ogg,.m4a" multiple>
+        </label>
+        <div class="stage" id="stage"></div>
+        <button class="btn hidden" id="upAll">העלאת הכול</button>
+        <p class="msg" id="upMsg"></p>
+      </div>
+    </section>
+
+    <!-- ============ WEEKS TAB ============ -->
+    <section id="tab-weeks" class="hidden">
+      <div class="filters" id="wfilter">
+        <button data-f="all" aria-pressed="true">הכול</button>
+        <button data-f="has" aria-pressed="false">עם סרטונים</button>
+        <button data-f="missing" aria-pressed="false">חסר סרטון</button>
+        <button data-f="noanswer" aria-pressed="false">חסרה תשובה</button>
+      </div>
+      <input type="search" id="wsearch" placeholder="חיפוש פרשה / שאלה / תאריך…" style="margin-bottom:10px">
+      <button class="btn ghost hidden" id="mkPosters" style="margin:0 0 12px">🖼 יצירת תמונות תצוגה לסרטונים (<span></span>)</button>
+      <p class="msg" id="posterMsg"></p>
+      <div id="weeks"></div>
+      <div class="card" style="margin-top:18px">
+        <h2>👤 שמות המגיבים</h2>
+        <p class="hint">כך יופיע כל שם באתר. השם משמאל הוא איך שהוא שמור בטלפון. אפשר לשנות (למשל רק שם פרטי), או <b>למחוק את השם</b> כדי שהתגובות שלו יופיעו בלי שם.</p>
+        <div id="names" style="display:grid;gap:6px"></div>
+        <button class="btn" id="saveNames">שמירת השמות</button>
+        <p class="msg" id="namesMsg"></p>
+      </div>
+    </section>
+
+    <button class="btn ghost" id="logout" style="margin-top:24px">יציאה</button>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let PW = ''; let WEEKS = []; let LIVE = { clips:[], topics:{}, comments:{}, hidden:[] };
+try { PW = localStorage.getItem('rabbi_pw') || ''; } catch(e){}
+const api = (path, opts={}) => fetch(path, { ...opts, headers: { 'x-admin-password': PW, ...(opts.headers||{}) } });
+const postJSON = (path, body) => api(path, { method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify(body) });
+const KIND = { shiur:'שיעור', question:'שאלה', answer:'תשובת הרב' };
+
+async function login(pw){
+  const r = await fetch('/api/check', { method:'POST', headers:{'x-admin-password':pw} });
+  if (!r.ok) return false;
+  PW = pw; try { localStorage.setItem('rabbi_pw', pw); } catch(e){}
+  return true;
+}
+$('#loginBtn').onclick = async () => { $('#loginErr').textContent=''; if (await login($('#pw').value.trim())) start(); else $('#loginErr').textContent='סיסמה שגויה'; };
+$('#pw').addEventListener('keydown', e => { if (e.key==='Enter') $('#loginBtn').click(); });
+$('#logout').onclick = () => { try{localStorage.removeItem('rabbi_pw')}catch(e){}; location.reload(); };
+
+document.querySelectorAll('.tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', x===b));
+  $('#tab-upload').classList.toggle('hidden', b.dataset.tab!=='upload');
+  $('#tab-weeks').classList.toggle('hidden', b.dataset.tab!=='weeks');
+  if (b.dataset.tab==='weeks') { renderWeeks(); renderNames(); }
+});
+
+async function refresh(){ try { const r = await fetch('/api/clips', {cache:'no-store'}); if (r.ok) LIVE = await r.json(); } catch(e){} LIVE.comments ||= {}; LIVE.hidden ||= []; LIVE.topics ||= {}; }
+
+/* ---------- WhatsApp chat import ---------- */
+const fnv = str => { let h = 0x811c9dc5; for (const b of new TextEncoder().encode(str)) { h ^= b; h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8,'0'); };
+/* read a zip with File.slice (works with large exports on phones) */
+async function openZip(file){
+  const u64 = (dv, o) => dv.getUint32(o, true) + dv.getUint32(o + 4, true) * 4294967296;
+  const tailLen = Math.min(file.size, 70000);
+  const tailStart = file.size - tailLen;
+  const tail = new DataView(await file.slice(tailStart).arrayBuffer());
+  let eocd = -1;
+  for (let i = tailLen - 22; i >= 0; i--) if (tail.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+  if (eocd < 0) throw new Error('SPLIT');
+  if (tail.getUint16(eocd + 4, true) > 0 || tail.getUint16(eocd + 6, true) > 0) throw new Error('SPLIT');
+  let cdSize = tail.getUint32(eocd + 12, true), cdOff = tail.getUint32(eocd + 16, true);
+  if (cdOff === 0xFFFFFFFF || cdSize === 0xFFFFFFFF || tail.getUint16(eocd + 10, true) === 0xFFFF) {
+    const loc = eocd - 20; // zip64 locator
+    if (loc >= 0 && tail.getUint32(loc, true) === 0x07064b50) {
+      const e64 = u64(tail, loc + 8);
+      const d = new DataView(await file.slice(e64, e64 + 56).arrayBuffer());
+      cdSize = u64(d, 40); cdOff = u64(d, 48);
+    }
+  }
+  if (cdOff + cdSize > file.size) throw new Error('SPLIT');
+  const cd = new DataView(await file.slice(cdOff, cdOff + cdSize).arrayBuffer());
+  const entries = [];
+  for (let i = 0; i + 46 <= cdSize && cd.getUint32(i, true) === 0x02014b50; ) {
+    const flags = cd.getUint16(i + 8, true), method = cd.getUint16(i + 10, true);
+    let csize = cd.getUint32(i + 20, true), usize = cd.getUint32(i + 24, true);
+    const nlen = cd.getUint16(i + 28, true), elen = cd.getUint16(i + 30, true), clen = cd.getUint16(i + 32, true);
+    let off = cd.getUint32(i + 42, true);
+    const nameBytes = new Uint8Array(cd.buffer, i + 46, nlen);
+    let name; try { name = new TextDecoder('utf-8', { fatal: true }).decode(nameBytes); } catch(e) { name = new TextDecoder('ibm866').decode(nameBytes); }
+    // zip64 extra field
+    for (let j = i + 46 + nlen; j + 4 <= i + 46 + nlen + elen; ) {
+      const id = cd.getUint16(j, true), sz = cd.getUint16(j + 2, true);
+      if (id === 1) { let k = j + 4;
+        if (usize === 0xFFFFFFFF) { usize = u64(cd, k); k += 8; }
+        if (csize === 0xFFFFFFFF) { csize = u64(cd, k); k += 8; }
+        if (off === 0xFFFFFFFF) { off = u64(cd, k); k += 8; } }
+      j += 4 + sz;
+    }
+    if (!name.startsWith('__MACOSX')) entries.push({ name, base: name.split('/').pop(), method, csize, usize, off, flags });
+    i += 46 + nlen + elen + clen;
+  }
+  async function blob(en){
+    const lh = new DataView(await file.slice(en.off, en.off + 30).arrayBuffer());
+    const start = en.off + 30 + lh.getUint16(26, true) + lh.getUint16(28, true);
+    const raw = file.slice(start, start + en.csize);
+    if (en.method === 0) return raw;
+    return await new Response(raw.stream().pipeThrough(new DecompressionStream('deflate-raw'))).blob();
+  }
+  return { entries, blob };
+}
+/* a folder / several loose files chosen together (txt + media) behave like a zip */
+function looseFiles(files){
+  const entries = files.map(f => ({ name: f.name, base: f.name, usize: f.size, file: f }));
+  return { entries, blob: async en => en.file };
+}
+async function fingerprint(b){
+  const head = await b.slice(0, 1 << 20).arrayBuffer();
+  const h = await crypto.subtle.digest('SHA-1', head);
+  return b.size + ':' + [...new Uint8Array(h)].map(x=>x.toString(16).padStart(2,'0')).join('').slice(0,16);
+}
+const ALREADY = new Set([17276944, 18270279, 48839599, 47931338, 15629415, 47753867, 47800273, 29876365, 29933750]);
+const LINE = /^‎?\[?(\d{1,2})[./](\d{1,2})[./](\d{2,4}),? (\d{1,2}):(\d{2})(?::(\d{2}))?\]?(?: -)? ([^:]{1,60}): ([\s\S]*)$/;
+function parseChat(text){
+  const msgs = []; let cur = null;
+  for (let raw of text.split(/\r?\n/)) {
+    const l = raw.replace(/^[‎‏‪-‮]+/, '');
+    const m = LINE.exec(l);
+    if (m) { let y = +m[3]; if (y < 100) y += 2000;
+      cur = { t: new Date(y, +m[2]-1, +m[1], +m[4], +m[5], +(m[6]||0)), who: m[7].replace(/[‎‏]/g,'').trim(), txt: m[8] };
+      msgs.push(cur);
+    } else if (cur) cur.txt += '\n' + l;
+  }
+  return msgs;
+}
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+function weekOf(d){ const x = new Date(d); if (x.getDay()===6 && x.getHours()>=18) x.setDate(x.getDate()+1); x.setDate(x.getDate() + ((6 - x.getDay() + 7) % 7)); return iso(x); }
+const KW = /לדעתי|לפי דעתי|בעיני|צריך ל|צריכה ל|לא צריך|חייב|פטור|מותר|אסור|יצא ידי|לא יצא|לשלם|ישלם|לפצות|להחזיר|לכאורה|הדין|אחריות|מגיע לו|מגיע לה/;
+const SKIP = /הושמט|הושמטה|omitted|קוד האבטחה|נמחקה|צירפת|צירף|יצא\/ה|הסרת|הודעות נעלמות|מצורף|attached|סגולת|יום הולדתי|שומעת אותך|מזל טוב|תהנו|בלי נדר|איך מגיעים|לא מגיעים|שיעור היום|לתפילה|תהילים|לרפואת|רפואה שלמה|להעביר ל|\*.*\*/;
+function cleanText(t){
+  t = t.replace(/<ההודעה נערכה>|<This message was edited>/g,'').replace(/[‎‏]/g,'');
+  t = t.replace(/[\u{1F300}-\u{1FAFF}☀-➿️‍]+/gu,'').replace(/\s+/g,' ').trim();
+  t = t.replace(/^(שבת שלום( ומבורך)?( ו)?תודה( רבה)?[.,!]? ?|בוקר טוב( לכולם)?[.,!]? ?|ערב טוב( לכולם)?[.,!]? ?|בקר טוב ?|צהריים טובים ?)/,'');
+  t = t.replace(/^(תודה רבה,? )?(שבת שלום|חג שמח)[^.!]*[.!] ?/,'');
+  const m = /[\s.,]*((חג שמח|ושבת|שבת) (שלום|מבורך|שמח)|תודה רבה)[^.]{0,40}$/.exec(t);
+  if (m && m.index > 40) t = t.slice(0, m.index);
+  t = t.replace(/^[\s,.]+|[\s,.]+$/g,'');
+  if (t.length > 600) t = t.slice(0, 590).replace(/\s\S*$/,'') + '…';
+  return t;
+}
+
+
+const AUDIO_RE = /\.(opus|ogg|oga|m4a|mp3|aac|amr|wav)$/i;
+/* ---------- week helpers ---------- */
+const TODAY_SHABBAT = weekOf(new Date());
+const LIMIT = (() => { const d = new Date(TODAY_SHABBAT+'T12:00:00'); d.setDate(d.getDate()+35); return iso(d); })();
+const weekById = id => WEEKS.find(w => w.id === id);
+function weekLabel(id){ const w = weekById(id); return w ? `${w.title} · ${w.date}` : `שבת ${id.split('-').reverse().join('.')}`; }
+function weekOptions(sel){
+  return WEEKS.filter(w => w.id <= LIMIT).slice().reverse()
+    .map(w => `<option value="${w.id}"${w.id===sel?' selected':''}>${esc(w.title)} · ${w.date}${w.id===TODAY_SHABBAT?' (השבוע)':''}</option>`).join('');
+}
+function weekState(w){
+  const hidden = new Set(LIVE.hidden);
+  const clips = [...(w.clips||[]).map(c => ({...c, fixed:true})), ...LIVE.clips.filter(c => c.week===w.id)];
+  const comments = [...(w.comments||[]), ...(LIVE.comments[w.id]||[])].filter(c => !hidden.has(c.h));
+  const n = k => clips.filter(c => c.kind===k).length;
+  return { clips, comments, shiur:n('shiur'), question:n('question'), answer:n('answer'), topic: LIVE.topics[w.id] || w.topic || '' };
+}
+
+async function start(){
+  $('#login').classList.add('hidden'); $('#app').classList.remove('hidden');
+  try { const dj = await (await fetch('/data/weeks.json', {cache:'no-store'})).json(); WEEKS = dj.weeks; BASENAMES = dj.names || {}; } catch(e){ WEEKS = []; }
+  await refresh();
+}
+
+/* ============ UPLOAD: WhatsApp export ============ */
+let PENDING = [], PVIDEOS = [], PVOICE = [], ZIP = null;
+/* system lines that are never comments */
+const SYS = /הושמט|הושמטה|omitted|קוד האבטחה|security code|נמחקה|was deleted|צירפת|צירף|הצטרף|יצא\/ה|הסרת|הוסר|הודעות נעלמות|disappearing|מצורף|attached|שינה את|changed the|יצר את הקבוצה|created group|<ההודעה נערכה>$/;
+function lightClean(t){
+  t = t.replace(/<ההודעה נערכה>|<This message was edited>/g,'').replace(/[\u200e\u200f]/g,'').replace(/\s+/g,' ').trim();
+  if (!t.replace(/[\u{1F300}-\u{1FAFF}\u2600-\u27BF\uFE0F\u200d\s.!]/gu,'').length) return ''; // emoji-only
+  if (t.length > 1500) t = t.slice(0, 1490).replace(/\s\S*$/,'') + '…';
+  return t;
+}
+$('#chat').onchange = async e => {
+  const all = [...e.target.files]; e.target.value = ''; if (!all.length) return;
+  const f = all.find(x => /\.zip$/i.test(x.name)) || all.find(x => /\.txt$/i.test(x.name)) || all[0];
+  const msg = $('#chatMsg'); msg.textContent = 'קורא את הקובץ…'; $('#pubChat').classList.add('hidden');
+  try {
+    if (/נשים/.test(f.name)) $('#grp').value = 'קבוצת הנשים';
+    else if (/גברים/.test(f.name)) $('#grp').value = 'קבוצת הגברים';
+    else if (/המלכה/.test(f.name)) $('#grp').value = 'לכבוד שבת המלכה';
+    else if (/שעור|שיעור/.test(f.name)) $('#grp').value = 'קבוצת השיעור';
+    ZIP = null; PVIDEOS = []; PENDING = []; PVOICE = [];
+    let text;
+    if (/\.zip$/i.test(f.name)) {
+      try { ZIP = await openZip(f); }
+      catch (err) {
+        if (err.message === 'SPLIT') throw new Error('נראה שזה קובץ zip מחולק (z01, z02…) או פגום. צריך לבחור את קובץ הייצוא המקורי מוואטסאפ – או לפתוח אותו ולבחור את התיקייה (הקובץ _chat.txt יחד עם הסרטונים).');
+        throw err;
+      }
+    } else if (all.length > 1) ZIP = looseFiles(all);
+    if (ZIP) {
+      const txts = ZIP.entries.filter(en => /\.txt$/i.test(en.base));
+      const chat = txts.find(en => /chat|צ'אט|צאט/i.test(en.base)) || txts.sort((x,y)=>y.usize-x.usize)[0];
+      if (!chat) throw new Error("לא נמצא קובץ צ'אט (txt) בקובץ שנבחר. בפנים יש: " + ZIP.entries.slice(0,6).map(en=>en.base).join(', ') + (ZIP.entries.length>6?'…':''));
+      text = await (await ZIP.blob(chat)).text();
+    } else text = await f.text();
+    const msgs = parseChat(text);
+    if (!msgs.length) throw new Error('לא זוהו הודעות בקובץ');
+    const cnt = {}; msgs.forEach(m => { if (/סרטון|video|VIDEO|מצורף/.test(m.txt)) cnt[m.who] = (cnt[m.who]||0)+1; });
+    const rabbi = Object.entries(cnt).sort((a,b)=>b[1]-a[1])[0]?.[0] || 'יוסף דנון';
+    const isRabbi = who => who === rabbi || /דנון/.test(who);
+    const g = $('#grp').value;
+    const base = {}, baseG = {}; WEEKS.forEach(w => { base[w.id] = new Set((w.comments||[]).map(c=>c.t)); baseG[w.id] = new Set((w.comments||[]).map(c=>c.g)); });
+    const seen = new Set();
+    for (const m of msgs) {
+      if (isRabbi(m.who)) continue;
+      const ALL = $('#allMsgs').checked;
+      if (ALL ? SYS.test(m.txt) : (SKIP.test(m.txt) || !KW.test(m.txt) || m.txt.length > 1200)) continue;
+      const ct = cleanText(m.txt);
+      const t = ALL ? lightClean(m.txt) : ct;
+      if (t.length < (ALL ? 2 : 12) || seen.has(t)) continue; seen.add(t);
+      const week = weekOf(m.t);
+      if (base[week]?.has(t) || base[week]?.has(ct) || (!ALL && baseG[week]?.has(g)) || (LIVE.comments[week]||[]).some(c=>c.t===t || c.t===ct)) continue;
+      PENDING.push({ week, g, t, n: m.who, h: fnv(week+'|'+t) });
+    }
+    if (ZIP) {
+      const byName = {}; ZIP.entries.forEach(en => byName[en.base] = en);
+      const seenSize = new Set();
+      for (const m of msgs) {
+        if (!isRabbi(m.who)) continue;
+        const mm = /<(?:מצורף|attached): ([^>]+?\.(?:mp4|mov|m4v|opus|ogg|m4a|mp3|aac))>/i.exec(m.txt); if (!mm) continue;
+        const en = byName[mm[1].trim()]; if (!en) continue;
+        if (ALREADY.has(en.usize) || seenSize.has(en.usize)) continue; seenSize.add(en.usize);
+        PVIDEOS.push({ en, week: weekOf(m.t), kind: guessKind(m.t), taken: m.t.toISOString() });
+      }
+      for (const m of msgs) {
+        if (isRabbi(m.who)) continue;
+        const mm = /<(?:מצורף|attached): ([^>]+?\.(?:opus|ogg|m4a|mp3|aac|amr))>/i.exec(m.txt); if (!mm) continue;
+        const en = byName[mm[1].trim()]; if (!en) continue;
+        PVOICE.push({ en, week: weekOf(m.t), g, n: m.who, taken: m.t.toISOString() });
+      }
+    }
+    const weeks = [...new Set([...PENDING, ...PVIDEOS, ...PVOICE].map(p=>p.week))].sort();
+    const parts = [];
+    const nAud = PVIDEOS.filter(v => AUDIO_RE.test(v.en.base)).length;
+    if (PVIDEOS.length - nAud) parts.push(`<b>${PVIDEOS.length - nAud}</b> סרטונים של הרב`);
+    if (nAud) parts.push(`<b>${nAud}</b> הקלטות של הרב`);
+    if (PENDING.length) parts.push(`<b>${PENDING.length}</b> תגובות`);
+    if (PVOICE.length) parts.push(`<b>${PVOICE.length}</b> תגובות קוליות`);
+    msg.innerHTML = parts.length
+      ? `נמצאו ${parts.join(' ו-')}, ל-${weeks.length} שבתות:<br><span class="muted">${weeks.map(weekLabel).map(esc).join('<br>')}</span>`
+      : `לא נמצא משהו חדש – הכול כבר באתר ✓`;
+    if (parts.length) $('#pubChat').classList.remove('hidden');
+  } catch (err) { msg.innerHTML = `<span class="err">${esc(err.message)}</span>`; }
+};
+$('#pubChat').onclick = async () => {
+  const b = $('#pubChat'); b.disabled = true; const out = []; const msg = $('#chatMsg');
+  if (PENDING.length) {
+    const r = await postJSON('/api/comments', { items: PENDING });
+    const j = await r.json().catch(()=>({}));
+    out.push(r.ok ? `<span class="ok">✓ ${j.added} תגובות פורסמו</span>` : '<span class="err">שגיאה בפרסום התגובות</span>');
+  }
+  let up = 0, dup = 0, bad = 0;
+  for (const [i, v] of PVIDEOS.entries()) {
+    msg.innerHTML = out.concat(`מעלה סרטון ${i+1} מתוך ${PVIDEOS.length}…`).join('<br>');
+    try {
+      const blob = await ZIP.blob(v.en);
+      const res = await uploadBlob(blob, { week: v.week, kind: v.kind, taken: v.taken, name: v.en.base });
+      if (res === 'dup') dup++; else if (res === 'ok') up++; else bad++;
+    } catch (e) { bad++; }
+  }
+  let vu = 0, vd = 0;
+  for (const [i, v] of PVOICE.entries()) {
+    msg.innerHTML = out.concat(`מעלה הקלטה ${i+1} מתוך ${PVOICE.length}…`).join('<br>');
+    try { const r = await uploadVoice(await ZIP.blob(v.en), { week: v.week, g: v.g, n: v.n, taken: v.taken, name: v.en.base }); if (r==='ok') vu++; else if (r==='dup') vd++; } catch(e){}
+  }
+  if (PVOICE.length) out.push(`<span class="ok">✓ ${vu} תגובות קוליות הועלו</span>${vd?` · ${vd} כבר היו`:''}`);
+  if (PVIDEOS.length) out.push(`<span class="ok">✓ ${up} סרטונים הועלו</span>${dup?` · ${dup} כבר היו באתר`:''}${bad?` · <span class="err">${bad} נכשלו</span>`:''}`);
+  msg.innerHTML = out.join('<br>') + '<br><span class="muted">אפשר לראות ולתקן בלשונית "כל השבתות".</span>';
+  b.disabled = false; b.classList.add('hidden'); PENDING = []; PVIDEOS = []; PVOICE = [];
+  await refresh();
+};
+
+/* ============ UPLOAD: files ============ */
+function guessKind(d){ return (d.getDay() === 5 && d.getHours() >= 11) ? 'answer' : 'shiur'; }
+function dateFromName(name){
+  let m = /(\d{4})-(\d{2})-(\d{2})[ _-]at[ _](\d{1,2})\.(\d{2})\.(\d{2})/.exec(name) || /VIDEO-(\d{4})-(\d{2})-(\d{2})-(\d{2})-(\d{2})-(\d{2})/.exec(name);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3], +m[4], +m[5], +m[6]);
+  m = /(?:VID|IMG|PTT|AUD|video)[-_](\d{4})(\d{2})(\d{2})[-_](?:WA)?(\d{2})?(\d{2})?/i.exec(name);
+  if (m) return new Date(+m[1], +m[2]-1, +m[3], +(m[4]||9), +(m[5]||0));
+  return null;
+}
+let STAGED = [];
+$('#files').onchange = e => {
+  const files = [...e.target.files]; e.target.value = '';
+  for (const f of files) {
+    const d = dateFromName(f.name) || new Date(f.lastModified || Date.now());
+    const audio = isAudio(f);
+    STAGED.push({ f, week: weekOf(d), kind: audio && $('#aud').value==='voice' ? 'voice' : guessKind(d), g: $('#grp2').value, taken: d.toISOString(), fromName: !!dateFromName(f.name) });
+  }
+  renderStage();
+};
+function renderStage(){
+  const box = $('#stage');
+  box.innerHTML = STAGED.map((s,i) => `
+    <div class="srow" data-i="${i}">
+      <div class="nm">${esc(s.f.name)} · ${(s.f.size/1048576).toFixed(1)}MB ${s.fromName?'':'<span class="muted">(שבת לפי תאריך הקובץ – כדאי לוודא)</span>'}</div>
+      <div class="ctl">
+        <select class="w">${weekOptions(s.week)}${weekById(s.week)||s.week>LIMIT?'':`<option value="${s.week}" selected>${s.week}</option>`}</select>
+        <select class="k"><option value="shiur">שיעור</option><option value="question">שאלה</option><option value="answer">תשובת הרב</option><option value="cvideo">💬 סרטון בתגובות</option><option value="voice">🎙 תגובה קולית</option></select>
+        <button class="x" title="הסרה">✕</button>
+      </div>
+      <div class="bar"><i></i></div><div class="st small"></div>
+    </div>`).join('');
+  box.querySelectorAll('.srow').forEach(r => {
+    const s = STAGED[+r.dataset.i];
+    r.querySelector('.k').value = s.kind;
+    r.querySelector('.w').onchange = ev => s.week = ev.target.value;
+    r.querySelector('.k').onchange = ev => s.kind = ev.target.value;
+    r.querySelector('.x').onclick = () => { STAGED.splice(+r.dataset.i, 1); renderStage(); };
+  });
+  $('#upAll').classList.toggle('hidden', !STAGED.length);
+  $('#upAll').textContent = `העלאת ${STAGED.length} סרטונים`;
+}
+function xhrUpload(blob, q, onp){
+  return new Promise(res => {
+    const x = new XMLHttpRequest();
+    x.open('POST', '/api/upload?' + q);
+    x.setRequestHeader('x-admin-password', PW);
+    x.setRequestHeader('content-type', blob.type || 'video/mp4');
+    x.upload.onprogress = ev => { if (ev.lengthComputable && onp) onp(ev.loaded/ev.total); };
+    x.onload = () => { let j={}; try { j = JSON.parse(x.responseText); } catch(e){} LASTID = j.id || null; res(x.status===200 ? (j.duplicate?'dup':'ok') : 'err'); };
+    x.onerror = () => res('err');
+    x.send(blob);
+  });
+}
+let LASTID = null;
+/* grab a frame from a video (File/Blob or URL) as a JPEG thumbnail */
+function makePoster(src){
+  return new Promise(resolve => {
+    const v = document.createElement('video'); let url = null, done = false;
+    const finish = b => { if (done) return; done = true; if (url) URL.revokeObjectURL(url); v.removeAttribute('src'); v.load(); resolve(b); };
+    v.muted = true; v.playsInline = true; v.preload = 'auto';
+    v.onloadeddata = () => { try { v.currentTime = Math.min(1, (v.duration||2)/3); } catch(e){ finish(null); } };
+    v.onseeked = () => {
+      const w = 360, h = Math.round(w * (v.videoHeight / v.videoWidth || 16/9));
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(v, 0, 0, w, h);
+      c.toBlob(b => finish(b), 'image/jpeg', 0.8);
+    };
+    v.onerror = () => finish(null);
+    setTimeout(() => finish(null), 15000);
+    v.src = typeof src === 'string' ? src : (url = URL.createObjectURL(src));
+  });
+}
+async function sendPoster(id, src){
+  const jpg = await makePoster(src); if (!jpg || !id) return false;
+  const r = await api('/api/poster?id=' + encodeURIComponent(id), { method:'POST', headers:{'content-type':'image/jpeg'}, body: jpg });
+  return r.ok;
+}
+async function uploadBlob(blob, { week, kind, taken, name }, onp){
+  if (blob.size > 95*1048576) return 'big';
+  if (ALREADY.has(blob.size)) return 'dup';
+  const fp = await fingerprint(blob);
+  const aud = AUDIO_RE.test(name||'') || (blob.type||'').startsWith('audio/');
+  const typed = aud ? new Blob([blob], { type: audioType(name||'') }) : (blob.type ? blob : new Blob([blob], { type: /\.mov$/i.test(name||'') ? 'video/quicktime' : 'video/mp4' }));
+  const res = await xhrUpload(typed, new URLSearchParams({ week, kind, taken, fp }), onp);
+  if (res === 'ok' && LASTID && !aud) await sendPoster(LASTID, typed);
+  return res;
+}
+const isAudio = f => (f.type||'').startsWith('audio/') || AUDIO_RE.test(f.name||f.base||'');
+function audioType(name){ return /\.m4a$|\.aac$/i.test(name) ? 'audio/mp4' : /\.mp3$/i.test(name) ? 'audio/mpeg' : /\.wav$/i.test(name) ? 'audio/wav' : 'audio/ogg'; }
+async function uploadVoice(blob, { week, g, n, taken, name }, onp){
+  if (blob.size > 30*1048576) return 'big';
+  const fp = 'v:' + await fingerprint(blob);
+  const typed = new Blob([blob], { type: audioType(name||'') });
+  return new Promise(res => {
+    const x = new XMLHttpRequest();
+    x.open('POST', '/api/voice?' + new URLSearchParams({ week, g, taken, fp, n: n||'' }));
+    x.setRequestHeader('x-admin-password', PW);
+    x.setRequestHeader('content-type', typed.type);
+    x.upload.onprogress = ev => { if (ev.lengthComputable && onp) onp(ev.loaded/ev.total); };
+    x.onload = () => { let j={}; try { j = JSON.parse(x.responseText); } catch(e){} res(x.status===200 ? (j.duplicate?'dup':'ok') : 'err'); };
+    x.onerror = () => res('err');
+    x.send(typed);
+  });
+}
+$('#upAll').onclick = async () => {
+  const b = $('#upAll'); b.disabled = true; let ok=0, dup=0, bad=0;
+  const rows = [...document.querySelectorAll('#stage .srow')];
+  for (const [i, s] of STAGED.entries()) {
+    const r = rows[i]; const st = r.querySelector('.st');
+    st.textContent = 'מעלה…';
+    const onp = p => r.querySelector('i').style.width = (p*100)+'%';
+    const res = s.kind === 'voice'
+      ? await uploadVoice(s.f, { week:s.week, g:s.g, taken:s.taken, name:s.f.name }, onp)
+      : await uploadBlob(s.f, { week:s.week, kind:s.kind, taken:s.taken, name:s.f.name }, onp);
+    r.querySelector('i').style.width = '100%';
+    st.innerHTML = res==='ok' ? '<span class="ok">הועלה ✓</span>' : res==='dup' ? '<span class="muted">כבר באתר ✓</span>' : res==='big' ? '<span class="err">גדול מ-95MB</span>' : '<span class="err">שגיאה</span>';
+    if (res==='ok') ok++; else if (res==='dup') dup++; else bad++;
+  }
+  $('#upMsg').innerHTML = `<span class="ok">✓ ${ok} הועלו</span>${dup?` · ${dup} כבר היו`:''}${bad?` · <span class="err">${bad} נכשלו</span>`:''}`;
+  STAGED = []; b.disabled = false; b.classList.add('hidden');
+  await refresh();
+};
+
+/* ============ WEEKS TAB ============ */
+let WF = 'all', OPEN = null;
+document.querySelectorAll('#wfilter button').forEach(b => b.onclick = () => {
+  WF = b.dataset.f; document.querySelectorAll('#wfilter button').forEach(x => x.setAttribute('aria-pressed', x===b)); renderWeeks();
+});
+$('#wsearch').oninput = () => renderWeeks();
+$('#mkPosters').onclick = async () => {
+  const b = $('#mkPosters'); b.disabled = true; const list = LIVE.clips.filter(c => !c.poster && !AUDIO_RE.test(c.key)); let n = 0;
+  for (const [i, c] of list.entries()) {
+    $('#posterMsg').textContent = `יוצר תמונה ${i+1} מתוך ${list.length}…`;
+    if (await sendPoster(c.id, '/v/' + encodeURIComponent(c.key))) n++;
+  }
+  $('#posterMsg').innerHTML = `<span class="ok">✓ נוצרו ${n} תמונות</span>`; b.disabled = false;
+  await refresh(); renderWeeks();
+};
+let BASENAMES = {};
+function renderNames(){
+  const raw = new Set();
+  WEEKS.forEach(w => (w.comments||[]).forEach(c => c.n && raw.add(c.n)));
+  Object.values(LIVE.comments||{}).forEach(l => l.forEach(c => c.n && raw.add(c.n)));
+  const cur = { ...BASENAMES, ...(LIVE.names||{}) };
+  $('#names').innerHTML = [...raw].sort().map(n => `<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;align-items:center"><input type="text" data-raw="${esc(n)}" value="${esc(cur[n] === undefined ? n : cur[n])}" placeholder="(בלי שם)"><span class="small muted">${esc(n)}</span></div>`).join('') || '<p class="muted small">אין עדיין שמות.</p>';
+}
+$('#saveNames').onclick = async () => {
+  const names = {}; document.querySelectorAll('#names input').forEach(i => names[i.dataset.raw] = i.value.trim());
+  const r = await postJSON('/api/names', { names });
+  $('#namesMsg').innerHTML = r.ok ? '<span class="ok">נשמר ✓</span>' : '<span class="err">שגיאה</span>';
+  if (r.ok) await refresh();
+};
+function renderWeeks(){
+  const missing = LIVE.clips.filter(c => !c.poster && !AUDIO_RE.test(c.key)).length;
+  $('#mkPosters').classList.toggle('hidden', !missing); $('#mkPosters span').textContent = missing;
+  const q = $('#wsearch').value.trim();
+  const list = WEEKS.filter(w => w.id <= LIMIT).slice().reverse().map(w => ({ w, s: weekState(w) })).filter(({w,s}) => {
+    const n = s.clips.length;
+    if (WF==='has' && !n) return false;
+    if (WF==='missing' && n) return false;
+    if (WF==='noanswer' && (!n || s.answer)) return false;
+    if (q && !(`${w.title} ${w.date} ${w.hebrew} ${s.topic}`.includes(q))) return false;
+    return true;
+  });
+  const badge = (n, label) => `<span class="b ${n?'on':'off'}">${label}${n>1?` ×${n}`:''}</span>`;
+  $('#weeks').innerHTML = list.map(({w,s}) => `
+    <div class="week${w.id===TODAY_SHABBAT?' cur':''}${w.id===OPEN?' open':''}" data-id="${w.id}">
+      <div class="wh">
+        <div><div class="wt">${esc(w.title)}${w.id===TODAY_SHABBAT?' · <span class="ok">השבוע</span>':''}</div>
+          <div class="wd">${esc(w.hebrew)} · ${w.date}</div>
+          ${s.topic?`<div class="wq">${esc(s.topic)}</div>`:''}</div>
+        <div class="badges">${badge(s.shiur,'שיעור')}${badge(s.question,'שאלה')}${badge(s.answer,'תשובה')}<span class="b ${s.comments.length?'on':'off'}">💬 ${s.comments.length}</span></div>
+      </div>
+      <div class="wbody"></div>
+    </div>`).join('') || '<p class="muted">אין שבתות שמתאימות לסינון.</p>';
+  document.querySelectorAll('#weeks .week').forEach(el => {
+    el.querySelector('.wh').onclick = () => { OPEN = OPEN===el.dataset.id ? null : el.dataset.id; renderWeeks(); };
+    if (el.dataset.id === OPEN) fillWeek(el);
+  });
+}
+function fillWeek(el){
+  const id = el.dataset.id, w = weekById(id), s = weekState(w);
+  const body = el.querySelector('.wbody');
+  body.innerHTML = `
+    <div class="sec"><h3>השאלה של השבוע</h3>
+      <textarea class="topic">${esc(s.topic)}</textarea>
+      <button class="btn sm saveT" style="margin-top:6px">שמירה</button> <span class="small tmsg"></span></div>
+    <div class="sec"><h3>סרטונים (${s.clips.length})</h3>
+      <div class="clips">${s.clips.map(c => c.fixed ? `
+        <div class="clip"><video src="${esc(c.src)}" poster="${esc(c.poster||'')}" preload="none" playsinline controls></video>
+          <div><b>${esc(c.label||KIND[c.kind])}</b><div class="fixed">סרטון קבוע (הועלה מראש)</div></div></div>` : `
+        <div class="clip" data-id="${c.id}"><video src="/v/${encodeURIComponent(c.key)}" ${c.poster?`poster="/v/${encodeURIComponent(c.poster)}" preload="none"`:'preload="metadata"'} playsinline controls></video>
+          <div>
+            <div class="row">
+              <select class="k"><option value="shiur">שיעור</option><option value="question">שאלה</option><option value="answer">תשובת הרב</option><option value="cvideo">💬 סרטון בתגובות</option></select>
+              <input class="l" type="text" placeholder="כותרת (לא חובה)" value="${esc(c.label||'')}">
+            </div>
+            <div class="row2"><select class="mv" style="flex:1">${weekOptions(c.week)}</select><button class="del">מחיקה</button></div>
+            <div class="small cmsg"></div>
+          </div></div>`).join('') || '<p class="muted small">אין עדיין סרטונים.</p>'}</div>
+      <label class="pick" style="margin-top:10px;padding:14px">＋ הוספת סרטונים לשבת הזו<input type="file" class="add" accept="video/*" multiple></label>
+      <p class="small amsg"></p></div>
+    <div class="sec"><h3>תגובות (${s.comments.length})</h3>
+      <ul class="cm">${s.comments.map(c => `<li data-h="${c.h}"><button class="del">${c.a?'מחיקה':'הסתרה'}</button><span class="g">${c.n?`<b style="color:var(--text)">${esc(c.n)}</b> · `:''}${esc(c.g)}${c.a?' · 🎙':''}</span><br>${c.a?`<audio controls preload="none" src="/v/${encodeURIComponent(c.a)}" style="width:100%"></audio>`:esc(c.t)}</li>`).join('') || '<li class="muted">אין תגובות.</li>'}</ul></div>`;
+  body.querySelector('.saveT').onclick = async () => {
+    const r = await postJSON('/api/topic', { week:id, topic: body.querySelector('.topic').value });
+    body.querySelector('.tmsg').innerHTML = r.ok ? '<span class="ok">נשמר ✓</span>' : '<span class="err">שגיאה</span>';
+    if (r.ok) { await refresh(); }
+  };
+  body.querySelectorAll('.clip[data-id]').forEach(ce => {
+    const c = LIVE.clips.find(x => x.id === ce.dataset.id);
+    ce.querySelector('.k').value = c.kind;
+    const save = async (extra={}) => {
+      const r = await postJSON('/api/update', { id:c.id, kind: ce.querySelector('.k').value, label: ce.querySelector('.l').value, ...extra });
+      ce.querySelector('.cmsg').innerHTML = r.ok ? '<span class="ok">נשמר ✓</span>' : '<span class="err">שגיאה</span>';
+      await refresh(); return r.ok;
+    };
+    ce.querySelector('.k').onchange = () => save();
+    ce.querySelector('.l').onchange = () => save();
+    ce.querySelector('.mv').onchange = async ev => { if (await save({ week: ev.target.value })) renderWeeks(); };
+    ce.querySelector('.del').onclick = async () => {
+      if (!confirm('למחוק את הסרטון מהאתר?')) return;
+      const r = await postJSON('/api/delete', { id:c.id }); if (r.ok) { await refresh(); renderWeeks(); }
+    };
+  });
+  body.querySelector('.add').onchange = async ev => {
+    const files = [...ev.target.files]; ev.target.value = '';
+    const m = body.querySelector('.amsg'); let n = 0;
+    for (const [i,f] of files.entries()) {
+      m.textContent = `מעלה ${i+1} מתוך ${files.length}…`;
+      const d = dateFromName(f.name) || new Date(f.lastModified||Date.now());
+      const res = await uploadBlob(f, { week:id, kind: guessKind(d), taken: d.toISOString(), name: f.name }, p => m.textContent = `מעלה ${i+1} מתוך ${files.length}… ${Math.round(p*100)}%`);
+      if (res==='ok') n++;
+    }
+    m.innerHTML = `<span class="ok">✓ ${n} הועלו</span>`; await refresh(); renderWeeks();
+  };
+  body.querySelectorAll('.cm li[data-h] .del').forEach(btn => btn.onclick = async () => {
+    const h = btn.parentElement.dataset.h;
+    const r = await postJSON('/api/comment-delete', { week:id, h }); if (r.ok) { await refresh(); renderWeeks(); }
+  });
+}
+
+if (PW) login(PW).then(ok => ok ? start() : null);
+</script>
+</body>
+</html>
