@@ -1,0 +1,43 @@
+# Codemagic builds for "הרב יוסף דנון".
+#   android-apk   → installable APK
+#   ios-unsigned  → unsigned IPA (sign it yourself afterwards)
+#
+# To use your own bundle id, add an environment variable BUNDLE_ID
+# (e.g. com.yourname.rabbidanon) to the workflow in the Codemagic UI or below.
+
+workflows:
+  android-apk:
+    name: Android APK
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
+      flutter: stable
+    scripts:
+      - name: Create platform folders, icon, splash
+        script: bash tool/setup.sh
+      - name: Build APK
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
+
+  ios-unsigned:
+    name: iOS unsigned IPA
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+    scripts:
+      - name: Create platform folders, icon, splash
+        script: bash tool/setup.sh
+      - name: Build iOS app (no code signing)
+        script: flutter build ios --release --no-codesign
+      - name: Package unsigned IPA
+        script: |
+          rm -rf Payload rabbi-danon-unsigned.ipa
+          mkdir Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qry rabbi-danon-unsigned.ipa Payload
+    artifacts:
+      - rabbi-danon-unsigned.ipa
