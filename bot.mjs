@@ -162,7 +162,11 @@ export async function handle(sock, msg) {
 
   const label = await groupLabel(sock, jid);
   const m = unwrap(msg.message);
-  const fromRabbi = !!msg.key.fromMe; // the bot is linked to the rabbi's own WhatsApp
+  // who is the rabbi: config "rabbi": ["9725XXXXXXXX", ...] (phone and/or lid digits); without it → messages sent from this account
+  const RID = (j) => String(j || "").split("@")[0].split(":")[0];
+  const ids = [msg.key.participant, msg.key.participantAlt, msg.key.participantPn, msg.participant].filter(Boolean).map(RID);
+  const fromRabbi = CFG.rabbi ? ids.some((x) => CFG.rabbi.map(String).includes(x)) : !!msg.key.fromMe;
+  log("👤", msg.pushName || "", ids.join(" / "), fromRabbi ? "(הרב)" : "");
   const kindOf = m.videoMessage ? "סרטון" : m.audioMessage ? "הקלטה" : m.imageMessage ? "תמונה" : (m.conversation || m.extendedTextMessage) ? "טקסט" : Object.keys(m)[0];
   if (kindOf !== "טקסט" || fromRabbi) log(`📩 ${kindOf} בקבוצה "${groupNames.get(jid)}" · ${fromRabbi ? "מהרב" : "מ-" + (msg.pushName || "חבר")}${label ? "" : " · (לא קבוצת שיעור – מדלג)"}`);
   if (!label) return; // not one of the lesson groups
@@ -206,13 +210,13 @@ export async function handle(sock, msg) {
       }
     }
     // ----- a member's written answer -----
-    else if (!fromRabbi) {
+    else {
       const raw = m.conversation || m.extendedTextMessage?.text || "";
       if (raw && raw.length <= 3000) {
         const t = cleanText(raw);
         if (t.length >= 2) {
           const r = await api("/api/comments", {
-            body: JSON.stringify({ items: [{ week, g: label, t, n: name, h: fnv(week + "|" + t) }] }),
+            body: JSON.stringify({ items: [{ week, g: label, t, n: fromRabbi ? "הרב" : name, h: fnv(week + "|" + t) }] }),
             type: "application/json",
           });
           if (r.added) log(`✓ תגובה: ${label}, שבת ${week}: ${t.slice(0, 50)}…`);
@@ -255,7 +259,7 @@ async function start() {
         log("המכשיר נותק מהוואטסאפ. מחקו את התיקייה auth והפעילו מחדש כדי לסרוק שוב.");
         process.exit(1);
       }
-      log("החיבור נסגר – מתחבר מחדש…");
+      log("החיבור נסגר – מתחבר מחדש…", "קוד:", code, lastDisconnect?.error?.message || "");
       setTimeout(start, 5000);
     }
   });
