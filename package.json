@@ -1,0 +1,13 @@
+{
+  "name": "rabbi-wa-bot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "מעלה אוטומטית לאתר את השיעורים והתגובות מקבוצות הוואטסאפ",
+  "scripts": { "start": "node bot.mjs" },
+  "dependencies": {
+    "baileys": "^7.0.0-rc.9",
+    "pino": "^9.5.0",
+    "qrcode-terminal": "^0.12.0"
+  }
+}
