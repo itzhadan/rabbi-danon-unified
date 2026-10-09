@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f1a28">
+<title>הרב יוסף דנון | 3 דקות לכבוד שבת</title>
+<meta name="description" content="שיעורי תורה קצרים של הרב יוסף דנון לכבוד שבת – מסודרים לפי שבתות.">
+<meta property="og:title" content="הרב יוסף דנון | 3 דקות לכבוד שבת">
+<meta property="og:description" content="שיעורי תורה קצרים לכבוד שבת – מסודרים לפי שבתות.">
+<meta property="og:image" content="assets/2026-09-26-answer.jpg">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1a28'/%3E%3Cpath d='M14 18q9-3 18 4 9-7 18-4v29q-9-3-18 4-9-7-18-4z' fill='none' stroke='%23d6b170' stroke-width='4' stroke-linejoin='round'/%3E%3Cpath d='M32 22v29' stroke='%23d6b170' stroke-width='3'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Heebo:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f1a28; --bg2:#15233a; --card:#1a2a40; --line:#2c3f5a;
+  --text:#f6f1e6; --muted:#b9c4d2; --gold:#d6b170; --gold2:#f0d49b;
+  --serif:"Frank Ruhl Libre",Georgia,serif; --sans:"Heebo",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.6;min-width:300px}
+a{color:inherit}
+.wrap{width:min(100% - 32px,1080px);margin-inline:auto}
+
+/* hero */
+.hero{position:relative;overflow:hidden;background:
+  radial-gradient(900px 400px at 85% -10%,#d6b17026,transparent 60%),
+  radial-gradient(700px 380px at 0% 110%,#3a5b8a40,transparent 60%),
+  linear-gradient(180deg,#132238,#0f1a28);border-bottom:1px solid var(--line)}
+.hero .wrap{padding:54px 0 46px;display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--gold);font-weight:500;letter-spacing:.02em;font-size:.98rem}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--gold)}
+h1{font-family:var(--serif);font-weight:900;font-size:clamp(2.3rem,6vw,3.9rem);line-height:1.1;margin:10px 0 6px}
+.en{direction:ltr;text-align:right;font-family:var(--serif);color:var(--gold2);opacity:.85;font-size:1.05rem;letter-spacing:.08em}
+.lead{color:var(--muted);font-size:1.12rem;max-width:40ch;margin:18px 0 0}
+.seal{width:132px;height:132px;border-radius:50%;border:1px solid #d6b17066;display:grid;place-items:center;
+  background:radial-gradient(circle,#d6b17014,transparent 70%);color:var(--gold)}
+.seal svg{width:62px;height:62px}
+.stats{display:flex;gap:26px;margin-top:26px;flex-wrap:wrap}
+.stat b{display:block;font-family:var(--serif);font-size:1.7rem;color:var(--gold2);line-height:1}
+.stat span{color:var(--muted);font-size:.9rem}
+
+/* toolbar */
+.bar{position:sticky;top:0;z-index:5;background:#0f1a28e6;backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar .wrap{display:flex;gap:10px;align-items:center;padding:12px 0;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--bg2);color:var(--text);font:inherit;font-size:.95rem;padding:7px 16px;border-radius:999px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--gold);color:#1a1409;border-color:var(--gold);font-weight:700}
+.bar select{margin-inline-start:auto;background:var(--bg2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:7px 10px;font:inherit;font-size:.95rem}
+
+/* weeks */
+main{padding:34px 0 70px}
+.week{scroll-margin-top:70px;background:linear-gradient(180deg,var(--card),#172539);border:1px solid var(--line);border-radius:22px;padding:24px;box-shadow:0 18px 50px #050b1466}
+.week+.week{margin-top:28px}
+.week.latest{border-color:#d6b17088}
+.whead{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:18px}
+.badge{display:inline-block;background:#d6b17022;color:var(--gold2);border:1px solid #d6b17055;border-radius:999px;font-size:.8rem;padding:2px 12px;margin-bottom:8px}
+.week h2{font-family:var(--serif);font-size:clamp(1.45rem,3.4vw,1.9rem);margin:0;line-height:1.25}
+.dates{color:var(--muted);font-size:.95rem;margin-top:4px}
+.topic{margin:8px 0 0;font-size:1.05rem}
+.topic b{color:var(--gold)}
+.share{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:1px solid var(--line);border-radius:12px;padding:8px 14px;font-size:.92rem;color:var(--text);background:var(--bg2);white-space:nowrap}
+.share:hover{border-color:#25d366}
+.share svg{width:18px;height:18px;color:#25d366}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.clip{background:#0b1320;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.player{aspect-ratio:9/16;background:#060b12;position:relative;overflow:hidden}
+.player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vp{position:absolute;inset:0;background:#060b12}
+.vp video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;background:#060b12}
+.vp.audio{background:radial-gradient(circle at 50% 35%,#2a3d5c,#0f1a28 70%)}
+.vp-audio{position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:10px;color:var(--gold2);padding-bottom:70%}
+.vp-audio svg{width:64px;height:64px;fill:currentColor;opacity:.85}
+.vp-audio span{font-size:.95rem;color:var(--muted)}
+.vp.audio .vp-bar{opacity:1}
+.vp.audio .vp-big{top:30%;bottom:0}
+.vp.audio .vp-fs{display:none}
+.vp.audio video{opacity:0}
+.vp-big{position:absolute;z-index:2;inset:0;margin:auto;width:72px;height:72px;border-radius:50%;border:0;background:#0f1a28cc;color:var(--gold2);display:grid;place-items:center;cursor:pointer;box-shadow:0 6px 24px #0008;transition:opacity .2s}
+.vp-big svg{width:34px;height:34px;fill:currentColor;margin-left:-4px}
+.vp.playing .vp-big{opacity:0;pointer-events:none}
+.vp-bar{position:absolute;z-index:2;left:0;right:0;bottom:0;display:flex;align-items:center;gap:8px;padding:22px 10px 10px;background:linear-gradient(transparent,#000c);direction:ltr;opacity:0;transition:opacity .2s}
+.vp.started .vp-bar{opacity:1}
+.vp.playing:not(:hover) .vp-bar{opacity:.0}
+@media (hover:none){.vp.started .vp-bar{opacity:1}}
+.vp-bar button{border:0;background:none;color:#fff;cursor:pointer;padding:4px;display:grid;place-items:center}
+.vp-bar svg{width:22px;height:22px;fill:currentColor}
+.vp-pp .i-pause{display:none}.vp.playing .vp-pp .i-pause{display:block}.vp.playing .vp-pp .i-play{display:none}
+.vp-seek{flex:1;accent-color:var(--gold);height:4px;min-width:0}
+.vp-time{color:#fff;font-size:.78rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+.vp-spin{position:absolute;inset:0;margin:auto;width:46px;height:46px;border-radius:50%;border:4px solid #ffffff33;border-top-color:var(--gold);animation:vpspin 1s linear infinite;display:none}
+.vp.waiting .vp-spin{display:block}
+@keyframes vpspin{to{transform:rotate(360deg)}}
+
+.yt{all:unset;cursor:pointer;position:absolute;inset:0;background-size:cover;background-position:center;display:grid;place-items:center}
+.yt span{width:68px;height:48px;border-radius:14px;background:#e00;display:grid;place-items:center}
+.yt span::after{content:"";border-style:solid;border-width:10px 0 10px 17px;border-color:transparent transparent transparent #fff;margin-left:4px}
+.cinfo{padding:12px 14px 14px;display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.cinfo h3{margin:0;font-size:1rem;font-weight:700}
+.kind{display:block;font-size:.8rem;color:var(--gold);font-weight:500}
+.dur{color:var(--muted);font-size:.88rem;direction:ltr}
+.talk{margin-top:20px;border-top:1px solid var(--line);padding-top:14px}
+.talk summary{cursor:pointer;font-weight:700;color:var(--gold2);list-style:none;display:flex;align-items:center;gap:10px}
+.talk summary::-webkit-details-marker{display:none}
+.talk summary::before{content:"❯";color:var(--gold);transform:rotate(180deg);transition:transform .2s;display:inline-block}
+.talk[open] summary::before{transform:rotate(90deg)}
+.talk summary span{font-weight:400;color:var(--muted);font-size:.9rem}
+.talk ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.talk li{background:#0e1828;border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.talk li p{margin:4px 0 0}
+.talk .who{color:var(--text);font-size:.92rem;margin-left:8px}
+.talk .g{font-size:.8rem;color:var(--gold)}
+.gchips{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0 0}
+.gchip{border:1px solid var(--line);background:var(--bg2);color:var(--text);border-radius:999px;padding:4px 12px;font:inherit;font-size:.85rem;cursor:pointer}
+.gchip[aria-pressed=true]{background:var(--gold2);color:#1a1409;border-color:var(--gold2)}
+.cvp{max-width:220px;margin-top:6px;border-radius:12px}
+.talk audio{width:100%;margin-top:6px;height:40px}
+.talk .note{color:var(--muted);font-size:.82rem;margin:10px 0 0}
+
+/* mohel banner + section */
+.mbanner{display:block;text-decoration:none;background:linear-gradient(90deg,#b8914a,#e3c07e,#b8914a);color:#1a1409}
+.mbanner .wrap{display:flex;align-items:center;justify-content:center;gap:10px 18px;flex-wrap:wrap;padding:9px 0;font-weight:700;font-size:.98rem;text-align:center}
+.mbanner .sep{opacity:.5}
+.mbanner .go{background:#1a1409;color:var(--gold2);border-radius:999px;padding:3px 14px;font-size:.88rem}
+.mohel{scroll-margin-top:70px;margin:46px 0 0;border:1px solid #d6b17088;border-radius:24px;overflow:hidden;background:linear-gradient(160deg,#1c2c44,#132034)}
+.mgrid{display:grid;grid-template-columns:1.05fr 1fr}
+.mphoto{position:relative;min-height:340px;background:#0b1320}
+.mphoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 30%}
+.mbody{padding:32px 32px 30px}
+.mbody .eyebrow{font-size:.92rem}
+.mbody h2{font-family:var(--serif);font-size:clamp(1.7rem,4vw,2.4rem);margin:8px 0 4px;line-height:1.15}
+.mbody .sub{color:var(--muted);margin:0 0 18px}
+.mlist{list-style:none;padding:0;margin:0 0 22px;display:grid;gap:10px}
+.mlist li{display:flex;gap:10px;align-items:flex-start}
+.mlist li::before{content:"✓";color:#1a1409;background:var(--gold);border-radius:50%;width:22px;height:22px;flex:none;display:grid;place-items:center;font-size:.8rem;font-weight:700;margin-top:2px}
+.cta{display:flex;gap:10px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;border-radius:14px;padding:12px 20px;font-size:1.02rem}
+.btn.call{background:var(--gold);color:#1a1409}
+.btn.wa{background:#1f9d55;color:#fff}
+.btn svg{width:20px;height:20px}
+.phone{direction:ltr;unicode-bidi:isolate}
+.mextra{display:grid;grid-template-columns:1.3fr 1fr;gap:22px;padding:26px 32px 32px;border-top:1px solid var(--line)}
+.quote{margin:0;background:#0e1828;border:1px solid var(--line);border-radius:18px;padding:22px 24px;position:relative}
+.quote::before{content:"”";position:absolute;top:-6px;left:18px;font-family:var(--serif);font-size:4.5rem;color:#d6b17055;line-height:1}
+.quote p{font-family:var(--serif);font-size:1.18rem;line-height:1.7;margin:0}
+.quote footer{border:0;padding:0;margin-top:10px;color:var(--gold);font-size:.95rem}
+.quote a{display:inline-block;margin-top:8px;color:var(--muted);font-size:.88rem}
+.docs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+.docs a{display:block;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:#0b1320;aspect-ratio:1}
+.docs img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .25s}
+.docs a:hover img{transform:scale(1.05)}
+.docs figcaption{grid-column:1/-1;color:var(--muted);font-size:.85rem}
+@media (max-width:760px){
+  .mbanner .sep{display:none}
+  .mbanner .wrap{gap:4px 12px;font-size:.92rem}
+  .mgrid,.mextra{grid-template-columns:1fr}
+  .mphoto{min-height:250px}
+  .mbody,.mextra{padding:22px 18px}
+}
+.empty{color:var(--muted);text-align:center;padding:40px 0}
+
+footer{border-top:1px solid var(--line);color:var(--muted);font-size:.92rem}
+footer .wrap{padding:26px 0 34px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer .fname{font-family:var(--serif);color:var(--text);font-size:1.1rem}
+
+@media (max-width:640px){
+  .hero .wrap{grid-template-columns:1fr;padding:38px 0 34px}
+  .seal{display:none}
+  .week{padding:18px;border-radius:18px}
+  .grid{grid-template-columns:1fr 1fr;gap:12px}
+  .cinfo{flex-direction:column;gap:0;padding:10px 12px 12px}
+  .bar select{margin-inline-start:0}
+}
+@media (max-width:380px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<a class="mbanner" href="#mohel"><div class="wrap">
+  <span>✡ מוהל מוסמך</span><span class="sep">|</span><span>ברית מילה בהידור ובמקצועיות</span><span class="sep">|</span><span class="phone">050-3933392</span><span class="go">לפרטים</span>
+</div></a>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">3 דקות לכבוד שבת</div>
+      <h1>הרב יוסף דנון</h1>
+      <div class="en" lang="en">RABBI YOSEF DANON</div>
+      <p class="lead">כמה דקות של תורה לקראת שבת המלכה. בכל שבוע שיעור קצר, שאלה לעיון ותשובת הרב.</p>
+      <div class="stats" id="stats"></div>
+    </div>
+    <div class="seal" aria-hidden="true">
+      <svg viewBox="0 0 64 64" fill="none"><path d="M9 13c9-3 17-1 23 5 6-6 14-8 23-5v38c-9-3-17-1-23 5-6-6-14-8-23-5V13Z" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/><path d="M32 18v38" stroke="currentColor" stroke-width="2.5"/></svg>
+    </div>
+  </div>
+</header>
+
+<nav class="bar" aria-label="סינון">
+  <div class="wrap">
+    <button class="chip" data-f="all" aria-pressed="true">הכול</button>
+    <button class="chip" data-f="shiur" aria-pressed="false">שיעורים ושאלות</button>
+    <button class="chip" data-f="answer" aria-pressed="false">תשובות הרב</button>
+    <select id="jump" aria-label="מעבר לשבת"><option value="">מעבר לשבת…</option></select>
+  </div>
+</nav>
+
+<main class="wrap" id="list"></main>
+
+<section class="wrap" aria-labelledby="mohel-h"><div class="mohel" id="mohel">
+  <div class="mgrid">
+    <div class="mphoto"><img src="assets/mohel-brit.jpg" alt="הרב יוסף דנון בעת ברית מילה" loading="lazy"></div>
+    <div class="mbody">
+      <div class="eyebrow">ברית מילה</div>
+      <h2 id="mohel-h">הרב יוסף דנון – מוהל מוסמך</h2>
+      <p class="sub">נבחן בבחינות הלכתיות, רפואיות ומקצועיות, ונמצא ראוי וכשר לשמש כמוהל מוסמך.</p>
+      <ul class="mlist">
+        <li>מוהל מוסמך מטעם הרבנות הראשית ומשרד הבריאות</li>
+        <li>ברית מילה בבית הכנסת, באולם או בבית</li>
+        <li>ליווי והנחיה רפואית להורים לאחר ברית המילה</li>
+      </ul>
+      <div class="cta">
+        <a class="btn call" href="tel:+972503933392"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.3 0 .7-.2 1l-2.3 2.2Z"/></svg><span class="phone">050-3933392</span></a>
+        <a class="btn wa" href="https://wa.me/972503933392?text=%D7%A9%D7%9C%D7%95%D7%9D%20%D7%94%D7%A8%D7%91%20%D7%93%D7%A0%D7%95%D7%9F%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%A4%D7%A8%D7%98%D7%99%D7%9D%20%D7%A2%D7%9C%20%D7%91%D7%A8%D7%99%D7%AA%20%D7%9E%D7%99%D7%9C%D7%94" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z"/></svg>וואטסאפ</a>
+      </div>
+    </div>
+  </div>
+  <div class="mextra">
+    <blockquote class="quote">
+      <p>הַכָּבוֹד הוּא לָנוּ שֶׁרַב בַּעַל מִדּוֹת כְּשֶׁלְּךָ מַכְנִיס אֶת בְּנֵנוּ בִּבְרִית הַמִּילָה. מִי יִתֵּן וְזֶה הַבֵּן מִמִּדּוֹתֶיךָ הַטּוֹבוֹת יֻשְׁפַּע, וִיהִי יְרֵא שָׁמַיִם וְעוֹסֵק בַּתּוֹרָה.</p>
+      <footer>מתוך מכתב תודה · משפחת בוסקילא</footer>
+      <a href="assets/mohel-letter.jpg" target="_blank" rel="noopener">לקריאת המכתב המלא ←</a>
+    </blockquote>
+    <figure class="docs" style="margin:0">
+      <a href="assets/mohel-cert.jpg" target="_blank" rel="noopener" title="תעודת מוהל מוסמך"><img src="assets/mohel-cert.jpg" alt="תעודת מוהל מוסמך" loading="lazy"></a>
+      <a href="assets/mohel-letter2.jpg" target="_blank" rel="noopener" title="מכתב המלצה"><img src="assets/mohel-letter2.jpg" alt="מכתב המלצה" loading="lazy"></a>
+      <a href="assets/mohel-white.jpg" target="_blank" rel="noopener" title="הרב יוסף דנון"><img src="assets/mohel-white.jpg" alt="הרב יוסף דנון" loading="lazy"></a>
+      <figcaption>תעודת הסמכה, מכתב המלצה ותמונות מבריתות</figcaption>
+    </figure>
+  </div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <span class="fname">הרב יוסף דנון</span>
+    <span>לזיכוי הרבים · שבת שלום</span>
+  </div>
+</footer>
+
+<noscript><p class="wrap empty">כדי לצפות בשיעורים יש להפעיל JavaScript בדפדפן.</p></noscript>
+
+<script>
+let WEEKS = []; let NAMES = {};
+const dispName = n => { if (!n) return ''; const v = NAMES[n]; return v === undefined ? n : v; };
+
+const KIND = { shiur:"שיעור", question:"שאלה", answer:"תשובת הרב" };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const WA = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.8-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.8-.4Z"/></svg>';
+
+let filter = "all";
+
+function clipHTML(c){
+  let media;
+  if (c.youtube) {
+    media = `<button class="yt" data-yt="${esc(c.youtube)}" style="background-image:url('https://i.ytimg.com/vi/${esc(c.youtube)}/hqdefault.jpg')" aria-label="נגן: ${esc(c.label)}"><span></span></button>`;
+  } else {
+    media = `<div class="vp${c.audio?' audio':(c.poster?'':' nopost')}" data-src="${esc(c.src)}">${c.audio?'<div class="vp-audio"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2Z"/></svg><span>הקלטה קולית של הרב</span></div>':''}
+      <video playsinline preload="none"${c.poster?` poster="${esc(c.poster)}"`:''} aria-label="${esc(c.label)}"></video>
+      <button class="vp-big" aria-label="ניגון"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+      <div class="vp-spin" aria-hidden="true"></div>
+      <div class="vp-bar">
+        <button class="vp-pp" aria-label="ניגון / עצירה"><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>
+        <input class="vp-seek" type="range" min="0" max="1000" value="0" aria-label="מיקום בסרטון">
+        <span class="vp-time">${esc(c.dur||'')}</span>
+        <button class="vp-fs" aria-label="מסך מלא"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button>
+      </div>
+    </div>`;
+  }
+  return `<article class="clip"><div class="player">${media}</div>
+    <div class="cinfo"><h3>${KIND[c.kind]&&KIND[c.kind]!==c.label?`<span class="kind">${KIND[c.kind]}</span>`:''}${esc(c.label)}</h3><span class="dur">${esc(c.dur||'')}</span></div></article>`;
+}
+
+function commentsHTML(w){
+  const cv = w.cvideos || [];
+  if ((!w.comments || !w.comments.length) && !cv.length || filter==="answer") return "";
+  w.comments = w.comments || [];
+  const groups = [...new Set(w.comments.map(c=>c.g))];
+  const chips = groups.length > 1 ? `<div class="gchips"><button class="gchip" aria-pressed="true" data-g="">כולם</button>${groups.map(g=>`<button class="gchip" aria-pressed="false" data-g="${esc(g)}">${esc(g.replace('קבוצת ',''))}</button>`).join('')}</div>` : '';
+  const cvHTML = cv.map(c => `<li class="cv"><span class="g">🎬 סרטון</span><div class="player cvp"><div class="vp${c.poster?'':' nopost'}" data-src="${esc(c.src)}"><video playsinline preload="none"${c.poster?` poster="${esc(c.poster)}"`:''}></video><button class="vp-big" aria-label="ניגון"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button><div class="vp-spin"></div><div class="vp-bar"><button class="vp-pp" aria-label="ניגון / עצירה"><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><input class="vp-seek" type="range" min="0" max="1000" value="0"><span class="vp-time"></span><button class="vp-fs" aria-label="מסך מלא"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button></div></div></div></li>`).join('');
+  return `<details class="talk"><summary>הדיון בקבוצות <span>${w.comments.length + cv.length} תגובות</span></summary>${chips}
+    <ul>${cvHTML}${w.comments.map(c=>`<li data-g="${esc(c.g)}">${dispName(c.n)?`<b class="who">${esc(dispName(c.n))}</b>`:''}<span class="g">${esc(c.g)}${c.a?' · 🎙 תגובה קולית':''}</span>${c.a?`<audio controls preload="none" src="/v/${encodeURIComponent(c.a)}"></audio>`:`<p>${esc(c.t)}</p>`}</li>`).join('')}</ul>
+    <p class="note">תשובות חברי הקבוצות לשאלה.</p></details>`;
+}
+
+function render(){
+  const list = document.getElementById('list');
+  const html = WEEKS.map((w,i) => {
+    const clips = w.clips.filter(c => filter==="all" || c.kind===filter || (filter==="shiur" && c.kind==="question"));
+    if (!clips.length) return "";
+    const url = location.origin + location.pathname + '#' + w.id;
+    const share = 'https://wa.me/?text=' + encodeURIComponent(`${w.title} – שיעור של הרב יוסף דנון\n${url}`);
+    const dates = [w.hebrew, w.date].filter(Boolean).join(' · ');
+    return `<section class="week${i===0?' latest':''}" id="${esc(w.id)}">
+      <div class="whead"><div>
+        ${i===0&&w.date?'<span class="badge">השבוע האחרון</span>':''}
+        <h2>${esc(w.title)}</h2>
+        ${dates?`<div class="dates">${esc(dates)}</div>`:''}
+        ${w.topic?`<p class="topic"><b>השאלה:</b> ${esc(w.topic)}</p>`:''}
+      </div>
+      <a class="share" href="${share}" target="_blank" rel="noopener">${WA}שיתוף בוואטסאפ</a></div>
+      <div class="grid">${clips.map(clipHTML).join('')}</div>${commentsHTML(w)}</section>`;
+  }).join('');
+  list.innerHTML = html || '<p class="empty">אין סרטונים בקטגוריה זו.</p>';
+  watchThumbs();
+}
+
+const ORDER = { shiur:0, question:1, answer:2 };
+async function load(){
+  let base = { weeks:[], archive:[] }, live = { clips:[], topics:{} };
+  try { base = await (await fetch('data/weeks.json')).json(); } catch(e){}
+  try { const r = await fetch('/api/clips'); if (r.ok) live = await r.json(); } catch(e){}
+  const byId = {};
+  base.weeks.forEach(w => { w.clips = w.clips || []; byId[w.id] = w; });
+  const extra = {};
+  (live.clips||[]).slice().sort((x,y)=> (x.taken||'').localeCompare(y.taken||'')).forEach(c => {
+    const w = byId[c.week] || (extra[c.week] ||= { id:c.week, title:'שבת '+c.week.split('-').reverse().join('.'), hebrew:'', date:c.week.split('-').reverse().map(Number).join('.'), topic:'', comments:[], clips:[] });
+    if (c.kind === 'cvideo') { (w.cvideos ||= []).push({ src:'/v/'+encodeURIComponent(c.key), poster: c.poster ? '/v/'+encodeURIComponent(c.poster) : '' }); return; }
+    w.clips.push({ kind:c.kind, label:c.label, audio: /\.(ogg|m4a|mp3|opus)$/i.test(c.key), src:'/v/'+encodeURIComponent(c.key), poster: c.poster ? '/v/'+encodeURIComponent(c.poster) : '', type:c.key.endsWith('.mov')?'video/quicktime':'video/mp4', _live:true });
+  });
+  Object.entries(live.topics||{}).forEach(([k,t]) => { if (byId[k] && t) byId[k].topic = t; });
+  NAMES = { ...(base.names||{}), ...(live.names||{}) };
+  const hidden = new Set(live.hidden||[]);
+  Object.values(byId).forEach(w => { w.comments = (w.comments||[]).filter(c => !hidden.has(c.h)); });
+  Object.entries(live.comments||{}).forEach(([k,list]) => {
+    const w = byId[k] || extra[k]; if (!w) return;
+    const have = new Set(w.comments.map(c=>c.t));
+    list.forEach(c => { if (c.a || !have.has(c.t)) { w.comments.push(c); have.add(c.t); } });
+  });
+  const all = [...base.weeks, ...Object.values(extra)]
+    .filter(w => w.clips.length)
+    .sort((a,b) => b.id.localeCompare(a.id));
+  all.forEach(w => {
+    w.clips.sort((x,y) => (ORDER[x.kind]??0) - (ORDER[y.kind]??0));
+    const n = {}; const cnt = {};
+    w.clips.forEach(c => cnt[c.kind] = (cnt[c.kind]||0)+1);
+    w.clips.forEach(c => { if (!c.label) { n[c.kind]=(n[c.kind]||0)+1;
+      if (!c.label && c.audio) { n.a=(n.a||0)+1; c.label = c.kind==='answer' ? 'תשובת הרב (הקלטה)' : `שיעור בהקלטה${cnt.shiur>1?` ${n.a}`:''}`; return; }
+      c.label = c.kind==='answer' ? 'תשובת הרב' + (cnt.answer>1?` ${n.answer}`:'') : c.kind==='question' ? 'השאלה לעיון' : (cnt.shiur>1 ? `השיעור – חלק ${n.shiur}` : 'השיעור'); } });
+  });
+  WEEKS = [...all, ...(base.archive||[])];
+  const total = WEEKS.reduce((n,w)=>n+w.clips.length,0);
+  document.getElementById('stats').innerHTML =
+    `<div class="stat"><b>${all.length}</b><span>שבתות</span></div>
+     <div class="stat"><b>${total}</b><span>סרטונים</span></div>`;
+  const jump = document.getElementById('jump');
+  WEEKS.forEach(w => jump.add(new Option(w.title + (w.date?` (${w.date})`:''), w.id)));
+  jump.onchange = () => { if (jump.value) { filterTo("all"); document.getElementById(jump.value).scrollIntoView(); jump.value=""; } };
+  render();
+  if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
+}
+
+function filterTo(f){
+  filter = f;
+  document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.f===f));
+  render();
+}
+document.querySelectorAll('.chip').forEach(b => b.onclick = () => filterTo(b.dataset.f));
+
+// one video at a time + lazy YouTube
+
+/* ---------- custom video player ---------- */
+const fmt = t => { t = Math.max(0, Math.floor(t||0)); return Math.floor(t/60)+':'+String(t%60).padStart(2,'0'); };
+function vpInit(vp){
+  if (vp._init) return vp._init; vp._init = true;
+  const v = vp.querySelector('video');
+  if (!v.src) v.src = vp.dataset.src;
+  const seek = vp.querySelector('.vp-seek'), time = vp.querySelector('.vp-time');
+  const upd = () => { if (v.duration) { if (!vp._drag) seek.value = v.currentTime / v.duration * 1000; time.textContent = fmt(v.currentTime) + ' / ' + fmt(v.duration); } };
+  v.addEventListener('timeupdate', upd); v.addEventListener('loadedmetadata', upd);
+  v.addEventListener('play', () => { vp.classList.add('playing','started'); document.querySelectorAll('.vp video').forEach(o => { if (o!==v) o.pause(); }); });
+  v.addEventListener('pause', () => vp.classList.remove('playing'));
+  v.addEventListener('ended', () => vp.classList.remove('playing'));
+  v.addEventListener('waiting', () => vp.classList.add('waiting'));
+  ['playing','canplay','pause','error'].forEach(ev => v.addEventListener(ev, () => vp.classList.remove('waiting')));
+  seek.addEventListener('input', () => { vp._drag = true; if (v.duration) time.textContent = fmt(seek.value/1000*v.duration) + ' / ' + fmt(v.duration); });
+  seek.addEventListener('change', () => { vp._drag = false; if (v.duration) v.currentTime = seek.value/1000*v.duration; });
+  v.addEventListener('click', () => v.paused ? v.play() : v.pause());
+  return true;
+}
+document.addEventListener('click', e => {
+  const vp = e.target.closest('.vp'); if (!vp) return;
+  const v = vp.querySelector('video');
+  if (e.target.closest('.vp-big') || e.target.closest('.vp-pp')) { vpInit(vp); v.paused ? v.play().catch(()=>{}) : v.pause(); }
+  else if (e.target.closest('.vp-fs')) { vpInit(vp);
+    if (v.webkitEnterFullscreen && !document.fullscreenEnabled) v.webkitEnterFullscreen();
+    else if (document.fullscreenElement) document.exitFullscreen(); else (vp.requestFullscreen ? vp.requestFullscreen() : v.webkitEnterFullscreen && v.webkitEnterFullscreen()); }
+});
+/* thumbnails for clips without a poster: load the first frame only when visible */
+const thumbIO = 'IntersectionObserver' in window ? new IntersectionObserver(ents => ents.forEach(en => {
+  if (!en.isIntersecting) return; thumbIO.unobserve(en.target);
+  const v = en.target.querySelector('video'); if (!v.src) { v.preload = 'metadata'; v.src = en.target.dataset.src + '#t=0.5'; }
+}), { rootMargin: '300px' }) : null;
+function watchThumbs(){ if (thumbIO) document.querySelectorAll('.vp.nopost').forEach(el => thumbIO.observe(el)); }
+
+document.addEventListener('click', e => {
+  const gc = e.target.closest('.gchip');
+  if (gc) { const box = gc.closest('.talk'); box.querySelectorAll('.gchip').forEach(x=>x.setAttribute('aria-pressed', x===gc));
+    box.querySelectorAll('li[data-g]').forEach(li => li.style.display = (!gc.dataset.g || li.dataset.g===gc.dataset.g) ? '' : 'none'); return; }
+  const b = e.target.closest('.yt'); if (!b) return;
+  b.outerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${b.dataset.yt}?autoplay=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+});
+
+document.getElementById('list').innerHTML = '<p class="empty">טוען שיעורים…</p>';
+load();
+</script>
+</body>
+</html>
