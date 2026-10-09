@@ -8,8 +8,8 @@
 
 ## בנייה ב-Codemagic
 
-1. מעלים את התיקייה הזו למאגר Git (GitHub / GitLab / Bitbucket) ומחברים אותו ל-Codemagic.
-2. Codemagic מזהה את `codemagic.yaml`. יש שני תהליכים:
+1. מחברים את המאגר המאוחד ל-Codemagic. קובץ הבנייה נמצא בשורש המאגר ומריץ פקודות מתוך app/.
+2. Codemagic מזהה את `../codemagic.yaml`. יש שני תהליכים:
    - **Android APK** – מפיק `app-release.apk` להתקנה ישירה.
    - **iOS unsigned IPA** – מפיק `rabbi-danon-unsigned.ipa` לא חתום, לחתימה עצמית.
 3. לשינוי מזהה האפליקציה (Bundle ID) מוסיפים משתנה סביבה `BUNDLE_ID`, למשל `com.yourname.rabbidanon`.

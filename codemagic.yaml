@@ -14,11 +14,11 @@ workflows:
       flutter: stable
     scripts:
       - name: Create platform folders, icon, splash
-        script: bash tool/setup.sh
+        script: cd app && bash tool/setup.sh
       - name: Build APK
-        script: flutter build apk --release
+        script: cd app && flutter build apk --release
     artifacts:
-      - build/app/outputs/flutter-apk/app-release.apk
+      - app/build/app/outputs/flutter-apk/app-release.apk
 
   ios-unsigned:
     name: iOS unsigned IPA
@@ -30,14 +30,15 @@ workflows:
       cocoapods: default
     scripts:
       - name: Create platform folders, icon, splash
-        script: bash tool/setup.sh
+        script: cd app && bash tool/setup.sh
       - name: Build iOS app (no code signing)
-        script: flutter build ios --release --no-codesign
+        script: cd app && flutter build ios --release --no-codesign
       - name: Package unsigned IPA
         script: |
+          cd app
           rm -rf Payload rabbi-danon-unsigned.ipa
           mkdir Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
           zip -qry rabbi-danon-unsigned.ipa Payload
     artifacts:
-      - rabbi-danon-unsigned.ipa
+      - app/rabbi-danon-unsigned.ipa
