@@ -235,6 +235,9 @@ class _SitePageState extends State<SitePage> {
   }
 }
 
+// מספר הגרסה מגיע מהבנייה ב-GitHub Actions (--dart-define=APP_VERSION=1.0.N)
+const String kAppVersion = String.fromEnvironment('APP_VERSION', defaultValue: 'פיתוח');
+
 class _Splash extends StatelessWidget {
   const _Splash();
 
@@ -258,6 +261,9 @@ class _Splash extends StatelessWidget {
               height: 28,
               child: CircularProgressIndicator(strokeWidth: 3, color: kGold),
             ),
+            SizedBox(height: 28),
+            Text('גרסה $kAppVersion',
+                style: TextStyle(color: Color(0xFFB9C4D2), fontSize: 13)),
           ],
         ),
       ),
@@ -301,6 +307,9 @@ class _ErrorView extends StatelessWidget {
                     style:
                         TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
               ),
+              const SizedBox(height: 24),
+              const Text('גרסה $kAppVersion',
+                  style: TextStyle(color: Color(0xFFB9C4D2), fontSize: 13)),
             ],
           ),
         ),

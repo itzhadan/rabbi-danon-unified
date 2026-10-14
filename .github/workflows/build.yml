@@ -21,7 +21,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with: { channel: stable, cache: true }
       - run: bash tool/setup.sh
-      - run: flutter build apk --release --build-number=${GITHUB_RUN_NUMBER}
+      - run: flutter build apk --release --build-name=1.0.${GITHUB_RUN_NUMBER} --build-number=${GITHUB_RUN_NUMBER} --dart-define=APP_VERSION=1.0.${GITHUB_RUN_NUMBER}
       - uses: actions/upload-artifact@v4
         with:
           name: rabbi-danon-android
@@ -37,7 +37,7 @@ jobs:
       - uses: subosito/flutter-action@v2
         with: { channel: stable, cache: true }
       - run: bash tool/setup.sh
-      - run: flutter build ios --release --no-codesign --build-number=${GITHUB_RUN_NUMBER}
+      - run: flutter build ios --release --no-codesign --build-name=1.0.${GITHUB_RUN_NUMBER} --build-number=${GITHUB_RUN_NUMBER} --dart-define=APP_VERSION=1.0.${GITHUB_RUN_NUMBER}
       - name: Package unsigned IPA
         run: |
           mkdir -p build/ipa/Payload
@@ -61,7 +61,10 @@ jobs:
         run: |
           mkdir pub && cd pub
           find ../out -type f \( -name '*.apk' -o -name '*.ipa' \) -exec cp {} . \;
-          mv app-release.apk rabbi-danon.apk 2>/dev/null || true
+          # מספר הגרסה בשם הקובץ
+          V=1.0.${GITHUB_RUN_NUMBER}
+          mv app-release.apk rabbi-danon-v$V.apk
+          mv rabbi-danon-unsigned.ipa rabbi-danon-v$V-unsigned.ipa
           ls -lh
           git init -q -b builds
           git config user.name "github-actions"
