@@ -66,6 +66,11 @@ main{padding:34px 0 70px}
 .share svg{width:18px;height:18px;color:#25d366}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
 .clip{background:#0b1320;border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.khl .player{aspect-ratio:16/9}
+.khl .vp-audio{padding-bottom:0;align-content:start;padding-top:18px;gap:4px}
+.khl .vp-audio svg{width:32px;height:32px}
+.khl .vp.audio .vp-big{top:25%}
+.source-link{display:inline-block;margin:0 14px 14px;color:var(--gold2);font-size:.85rem}
 .player{aspect-ratio:9/16;background:#060b12;position:relative;overflow:hidden}
 .player iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .vp{position:absolute;inset:0;background:#060b12}
@@ -203,6 +208,7 @@ footer .fname{font-family:var(--serif);color:var(--text);font-size:1.1rem}
     <button class="chip" data-f="all" aria-pressed="true">הכול</button>
     <button class="chip" data-f="shiur" aria-pressed="false">שיעורים ושאלות</button>
     <button class="chip" data-f="answer" aria-pressed="false">תשובות הרב</button>
+    <button class="chip" data-f="kolhalashon" aria-pressed="false">שיעורי יום רביעי · קול הלשון</button>
     <select id="jump" aria-label="מעבר לשבת"><option value="">מעבר לשבת…</option></select>
   </div>
 </nav>
@@ -252,7 +258,7 @@ footer .fname{font-family:var(--serif);color:var(--text);font-size:1.1rem}
 <noscript><p class="wrap empty">כדי לצפות בשיעורים יש להפעיל JavaScript בדפדפן.</p></noscript>
 
 <script>
-let WEEKS = []; let NAMES = {};
+let WEEKS = []; let KHL = []; let NAMES = {};
 const dispName = n => { if (!n) return ''; const v = NAMES[n]; return v === undefined ? n : v; };
 
 const KIND = { shiur:"שיעור", question:"שאלה", answer:"תשובת הרב" };
@@ -296,6 +302,11 @@ function commentsHTML(w){
 
 function render(){
   const list = document.getElementById('list');
+  if (filter === 'kolhalashon') {
+    list.innerHTML = `<section class="week khl" id="kolhalashon"><div class="whead"><div><span class="badge">השיעור השבועי המלא</span><h2>שיעורי יום רביעי — קול הלשון</h2><p class="dates">הקלטות השיעורים של הרב יוסף דנון · מקור: קול הלשון</p></div></div><div class="grid">${KHL.map(c => `<div>${clipHTML(c)}<a class="source-link" href="${esc(c.sourceUrl)}" target="_blank" rel="noopener">${esc(c.date)} · השיעור בקול הלשון ↗</a></div>`).join('')}</div>${KHL.length?'':'<p class="empty">השיעורים יופיעו כאן לאחר העלאתם.</p>'}</section>`;
+    watchThumbs();
+    return;
+  }
   const html = WEEKS.map((w,i) => {
     const clips = w.clips.filter(c => filter==="all" || c.kind===filter || (filter==="shiur" && c.kind==="question"));
     if (!clips.length) return "";
@@ -324,7 +335,12 @@ async function load(){
   const byId = {};
   base.weeks.forEach(w => { w.clips = w.clips || []; byId[w.id] = w; });
   const extra = {};
+  KHL = [];
   (live.clips||[]).slice().sort((x,y)=> (x.taken||'').localeCompare(y.taken||'')).forEach(c => {
+    if (c.kind === 'kolhalashon') {
+      KHL.push({taken:c.taken||c.week,part:c.part||1,kind:c.kind,label:c.label + (c.parts>1?` · חלק ${c.part} מתוך ${c.parts}`:''),audio:/\.(ogg|m4a|mp3|opus)$/i.test(c.key),src:'/v/'+encodeURIComponent(c.key),poster:c.poster?'/v/'+encodeURIComponent(c.poster):'',sourceUrl:c.sourceUrl||'https://www.kolhalashon.com/he/regularSite/ravs/2268/1/1',date:c.week.split('-').reverse().join('.')});
+      return;
+    }
     const w = byId[c.week] || (extra[c.week] ||= { id:c.week, title:'שבת '+c.week.split('-').reverse().join('.'), hebrew:'', date:c.week.split('-').reverse().map(Number).join('.'), topic:'', comments:[], clips:[] });
     if (c.kind === 'cvideo') { (w.cvideos ||= []).push({ src:'/v/'+encodeURIComponent(c.key), poster: c.poster ? '/v/'+encodeURIComponent(c.poster) : '' }); return; }
     w.clips.push({ kind:c.kind, label:c.label, audio: /\.(ogg|m4a|mp3|opus)$/i.test(c.key), src:'/v/'+encodeURIComponent(c.key), poster: c.poster ? '/v/'+encodeURIComponent(c.poster) : '', type:c.key.endsWith('.mov')?'video/quicktime':'video/mp4', _live:true });
@@ -350,6 +366,7 @@ async function load(){
       c.label = c.kind==='answer' ? 'תשובת הרב' + (cnt.answer>1?` ${n.answer}`:'') : c.kind==='question' ? 'השאלה לעיון' : (cnt.shiur>1 ? `השיעור – חלק ${n.shiur}` : 'השיעור'); } });
   });
   WEEKS = [...all, ...(base.archive||[])];
+  KHL.sort((a,b)=>b.taken.localeCompare(a.taken)||a.part-b.part);
   const total = WEEKS.reduce((n,w)=>n+w.clips.length,0);
   document.getElementById('stats').innerHTML =
     `<div class="stat"><b>${all.length}</b><span>שבתות</span></div>
@@ -358,11 +375,15 @@ async function load(){
   WEEKS.forEach(w => jump.add(new Option(w.title + (w.date?` (${w.date})`:''), w.id)));
   jump.onchange = () => { if (jump.value) { filterTo("all"); document.getElementById(jump.value).scrollIntoView(); jump.value=""; } };
   render();
+  if (location.hash === '#kolhalashon') filterTo('kolhalashon');
   if (location.hash) { const t = document.getElementById(location.hash.slice(1)); if (t) t.scrollIntoView(); }
 }
 
 function filterTo(f){
   filter = f;
+  document.getElementById('jump').hidden = f === 'kolhalashon';
+  if (f === 'kolhalashon') history.replaceState(null,'','#kolhalashon');
+  else if (location.hash === '#kolhalashon') history.replaceState(null,'',location.pathname);
   document.querySelectorAll('.chip').forEach(b => b.setAttribute('aria-pressed', b.dataset.f===f));
   render();
 }

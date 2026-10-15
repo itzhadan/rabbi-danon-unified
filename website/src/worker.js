@@ -78,7 +78,7 @@ export default {
     if (path === "/api/upload" && request.method === "POST") {
       const week = url.searchParams.get("week") || "";
       if (!/^\d{4}-\d{2}-\d{2}$/.test(week)) return json({ error: "שבת לא תקינה" }, 400);
-      const kind = ["shiur", "question", "answer", "cvideo"].includes(url.searchParams.get("kind")) ? url.searchParams.get("kind") : "shiur";
+      const kind = ["shiur", "question", "answer", "cvideo", "kolhalashon"].includes(url.searchParams.get("kind")) ? url.searchParams.get("kind") : "shiur";
       const label = (url.searchParams.get("label") || "").slice(0, 80);
       const taken = url.searchParams.get("taken") || new Date().toISOString();
       const fingerprint = url.searchParams.get("fp") || "";
@@ -91,7 +91,12 @@ export default {
       const key = `clips/${week}/${id}.${ext}`;
       await env.VIDEOS.put(key, request.body, { httpMetadata: { contentType: type } });
       const fresh = await readIndex(env); // re-read to reduce lost updates
-      fresh.clips.push({ id, week, kind, label, key, taken, fp: fingerprint, added: new Date().toISOString() });
+      const sourceId = url.searchParams.get("sourceId") || "";
+      const source = kind === "kolhalashon" && /^\d{1,12}$/.test(sourceId)
+        ? { sourceId, sourceUrl: `https://www.kolhalashon.com/he/regularSite/playShiur/${sourceId}/-1/0/false`,
+            part: Math.max(1, Number(url.searchParams.get("part")) || 1),
+            parts: Math.max(1, Number(url.searchParams.get("parts")) || 1) } : {};
+      fresh.clips.push({ id, week, kind, label, key, taken, fp: fingerprint, ...source, added: new Date().toISOString() });
       await writeIndex(env, fresh);
       return json({ ok: true, id });
     }

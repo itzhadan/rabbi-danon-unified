@@ -7,3 +7,6 @@
 **/.dev.vars
 **/.dev.vars.*
 *.log
+__pycache__/
+*.pyc
+.khl-*.done
