@@ -33,7 +33,7 @@ class ImportTests(unittest.TestCase):
             uploaded = []
 
             def remote(request, **kwargs):
-                if isinstance(request, str):
+                if request.get_method() == 'GET':
                     return io.BytesIO(b'{"clips":[]}')
                 uploaded.append(request)
                 return io.BytesIO(b'{"ok":true}')

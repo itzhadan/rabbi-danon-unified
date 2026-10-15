@@ -21,6 +21,7 @@ import urllib.request
 
 LIMIT = 95_000_000
 DEFAULT_SITE = 'https://rabbiyosefdanon.rabbiyosefdanon.workers.dev'
+USER_AGENT = 'RabbiDanonImporter/1.0'
 
 
 def checked_source(url):
@@ -112,7 +113,8 @@ def run(manifest, config_path):
         raise ValueError('Destination must use HTTPS')
     password = config['password']
     print('Reading destination index', flush=True)
-    with urllib.request.urlopen(site + '/api/clips', timeout=60) as response:
+    index_request = urllib.request.Request(site + '/api/clips', headers={'User-Agent': USER_AGENT})
+    with urllib.request.urlopen(index_request, timeout=60) as response:
         existing = {c.get('fp') for c in json.load(response).get('clips', [])}
     for item in items:
         for media in item['media']:
@@ -140,7 +142,7 @@ def run(manifest, config_path):
                         taken=item['date']+'T19:00:00+03:00', fp=fingerprint,
                         sourceId=str(item['id']), part=number, parts=len(parts)))
                     request = urllib.request.Request(site+'/api/upload?'+params,
-                        data=file.read_bytes(), headers={'x-admin-password': password, 'Content-Type': content_type}, method='POST')
+                        data=file.read_bytes(), headers={'x-admin-password': password, 'Content-Type': content_type, 'User-Agent': USER_AGENT}, method='POST')
                     print(f"Uploading {item['id']} part {number}/{len(parts)}", flush=True)
                     with urllib.request.urlopen(request, timeout=300) as response:
                         result = json.load(response)
