@@ -42,7 +42,9 @@ class OfficialRedirects(urllib.request.HTTPRedirectHandler):
 def download(url, dest):
     opener = urllib.request.build_opener(OfficialRedirects())
     with opener.open(checked_source(url), timeout=120) as response, dest.open('wb') as out:
-        if not response.headers.get('Content-Type', '').startswith(('audio/', 'video/', 'application/octet-stream')):
+        # Some official downloads use binary/octet-stream. ffprobe validates the
+        # actual bytes before upload, rather than relying on the MIME label.
+        if response.headers.get('Content-Type', '').startswith(('text/', 'application/json')):
             raise ValueError('Source did not return a media file')
         size = 0
         while chunk := response.read(1024 * 1024):
