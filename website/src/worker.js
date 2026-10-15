@@ -156,12 +156,17 @@ export default {
       const idx0 = await readIndex(env);
       if (fp && Object.values(idx0.comments).some((l) => l.some((c) => c.h === fp))) return json({ ok: true, duplicate: true });
       const type = request.headers.get("content-type") || "audio/ogg";
-      const ext = /mp4|m4a|aac/.test(type) ? "m4a" : /mpeg|mp3/.test(type) ? "mp3" : "ogg";
+      if (!/^(audio|video)\//.test(type)) return json({error:"סוג מדיה לא נתמך"}, 415);
+      if (Number(request.headers.get("content-length")) > 95_000_000) return json({error:"יש לפצל לחלקים עד 95 מגה"}, 413);
+      const isVideo = type.startsWith("video/");
+      const ext = isVideo ? "mp4" : /mp4|m4a|aac/.test(type) ? "m4a" : /mpeg|mp3/.test(type) ? "mp3" : "ogg";
       const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
       const key = `voice/${week}/${id}.${ext}`;
+      const part = Math.max(1, Number(url.searchParams.get("part")) || 1);
+      const parts = Math.max(part, Number(url.searchParams.get("parts")) || 1);
       await env.VIDEOS.put(key, request.body, { httpMetadata: { contentType: type } });
       const idx = await readIndex(env);
-      (idx.comments[week] ||= []).push({ g, t: "", a: key, h: fp || id, taken, n: (url.searchParams.get("n") || "").slice(0, 60) });
+      (idx.comments[week] ||= []).push({ g, t: "", a: key, media: isVideo ? "video" : "audio", part, parts, h: fp || id, taken, n: (url.searchParams.get("n") || "").slice(0, 60) });
       await writeIndex(env, idx);
       return json({ ok: true, id });
     }

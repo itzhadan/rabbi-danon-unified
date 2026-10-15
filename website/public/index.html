@@ -116,6 +116,7 @@ main{padding:34px 0 70px}
 .gchip{border:1px solid var(--line);background:var(--bg2);color:var(--text);border-radius:999px;padding:4px 12px;font:inherit;font-size:.85rem;cursor:pointer}
 .gchip[aria-pressed=true]{background:var(--gold2);color:#1a1409;border-color:var(--gold2)}
 .cvp{max-width:220px;margin-top:6px;border-radius:12px}
+.talk video{width:100%;max-height:480px;background:#000;border-radius:12px;margin-top:8px}
 .talk audio{width:100%;margin-top:6px;height:40px}
 .talk .note{color:var(--muted);font-size:.82rem;margin:10px 0 0}
 
@@ -289,7 +290,7 @@ function commentsHTML(w){
   const chips = groups.length > 1 ? `<div class="gchips"><button class="gchip" aria-pressed="true" data-g="">כולם</button>${groups.map(g=>`<button class="gchip" aria-pressed="false" data-g="${esc(g)}">${esc(g.replace('קבוצת ',''))}</button>`).join('')}</div>` : '';
   const cvHTML = cv.map(c => `<li class="cv"><span class="g">🎬 סרטון</span><div class="player cvp"><div class="vp${c.poster?'':' nopost'}" data-src="${esc(c.src)}"><video playsinline preload="none"${c.poster?` poster="${esc(c.poster)}"`:''}></video><button class="vp-big" aria-label="ניגון"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button><div class="vp-spin"></div><div class="vp-bar"><button class="vp-pp" aria-label="ניגון / עצירה"><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><input class="vp-seek" type="range" min="0" max="1000" value="0"><span class="vp-time"></span><button class="vp-fs" aria-label="מסך מלא"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" fill="none" stroke="currentColor" stroke-width="2.2"/></svg></button></div></div></div></li>`).join('');
   return `<details class="talk"><summary>הדיון בקבוצות <span>${w.comments.length + cv.length} תגובות</span></summary>${chips}
-    <ul>${cvHTML}${w.comments.map(c=>`<li data-g="${esc(c.g)}">${dispName(c.n)?`<b class="who">${esc(dispName(c.n))}</b>`:''}<span class="g">${esc(c.g)}${c.a?' · 🎙 תגובה קולית':''}</span>${c.a?`<audio controls preload="none" src="/v/${encodeURIComponent(c.a)}"></audio>`:`<p>${esc(c.t)}</p>`}</li>`).join('')}</ul>
+    <ul>${cvHTML}${w.comments.map(c=>`<li data-g="${esc(c.g)}">${dispName(c.n)?`<b class="who">${esc(dispName(c.n))}</b>`:''}<span class="g">${esc(c.g)}${c.a?(c.media==='video'||/\.mp4$/i.test(c.a)?' · 🎬 תגובת וידאו':' · 🎙 תגובה קולית'):''}${c.parts>1?' · חלק '+c.part+' מתוך '+c.parts:''}</span>${c.a?((c.media==="video"||/\.mp4$/i.test(c.a))?`<video controls playsinline preload="none" src="/v/${encodeURIComponent(c.a)}"></video>`:`<audio controls preload="none" src="/v/${encodeURIComponent(c.a)}"></audio>`):`<p>${esc(c.t)}</p>`}</li>`).join('')}</ul>
     <p class="note">תשובות חברי הקבוצות לשאלה.</p></details>`;
 }
 

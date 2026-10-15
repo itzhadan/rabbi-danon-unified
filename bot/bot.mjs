@@ -123,6 +123,42 @@ function makePoster(videoBuf) {
   });
 }
 
+
+const MEDIA_LIMIT = 95_000_000;
+const runMediaTool = (tool, args) => new Promise((resolve, reject) => {
+  execFile(tool, args, { timeout: 600000, maxBuffer: 1024 * 1024 }, (err, stdout) => err ? reject(err) : resolve(stdout));
+});
+export async function splitMedia(buf, video, type = "audio/ogg") {
+  if (buf.length <= MEDIA_LIMIT) return [buf];
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "rabbi-parts-"));
+  const input = path.join(dir, "source");
+  fs.writeFileSync(input, buf);
+  try {
+    const duration = Number((await runMediaTool("ffprobe", ["-v", "error", "-show_entries", "format=duration", "-of", "default=noprint_wrappers=1:nokey=1", input])).trim());
+    if (!(duration > 0)) throw new Error("לא ניתן לקבוע את אורך המדיה לצורך פיצול");
+    let fps = 0;
+    if (video) { const rate = (await runMediaTool("ffprobe", ["-v", "error", "-select_streams", "v:0", "-show_entries", "stream=avg_frame_rate", "-of", "default=nw=1:nk=1", input])).trim().split("/").map(Number); fps = rate[0] / (rate[1] || 1); }
+    const result = [];
+    let serial = 0;
+    const cut = async (start, length, depth = 0) => {
+      if (fps > 0) { const end = Math.round((start + length) * fps) / fps; start = Math.round(start * fps) / fps; length = end - start; }
+      const output = path.join(dir, "part-" + (++serial) + (video ? ".mp4" : /ogg|opus/.test(type) ? ".ogg" : /mpeg|mp3/.test(type) ? ".mp3" : ".m4a"));
+      await runMediaTool("ffmpeg", ["-v", "error", "-y", "-i", input, "-ss", String(start), "-t", String(length), "-map", video ? "0:v:0" : "0:a:0", ...(video ? ["-map", "0:a:0?"] : []), ...(video ? ["-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p", "-c:a", "aac"] : ["-c", "copy"]), "-avoid_negative_ts", "make_zero", ...(video ? ["-movflags", "+faststart"] : []), output]);
+      const part = fs.readFileSync(output);
+      fs.unlinkSync(output);
+      if (!part.length) throw new Error("נוצר חלק מדיה ריק");
+      if (part.length > MEDIA_LIMIT) {
+        if (depth >= 12 || length < 1) throw new Error("לא ניתן לפצל חלק מתחת ל־95 מגה");
+        await cut(start, length / 2, depth + 1);
+        await cut(start + length / 2, length / 2, depth + 1);
+      } else result.push(part);
+    };
+    const count = Math.ceil(buf.length / 75_000_000);
+    for (let i = 0; i < count; i++) await cut(i * duration / count, duration / count);
+    return result;
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+}
+
 // ---------- WhatsApp ----------
 const groupNames = new Map();
 async function groupLabel(sock, jid) {
@@ -148,28 +184,26 @@ function unwrap(message) {
 
 export async function handle(sock, msg) {
   const jid = msg.key?.remoteJid || "";
-  if (!jid.endsWith("@g.us")) return;
-  if (!msg.message) {
-    // a message this device could not decrypt (shows as "waiting for this message")
-    if (msg.messageStubType === 2 || msg.messageStubParameters?.length) log(`… הודעה בקבוצה שעדיין לא נפתחה (${groupNames.get(jid) || jid}) – וואטסאפ ישלח אותה שוב`);
-    return;
-  }
-  const id = `${jid}|${msg.key.id}`;
+  if (!jid.endsWith("@g.us") || !msg.message) return;
+  const initial = unwrap(msg.message);
+  const retryStudentMedia = initial.videoMessage || initial.ptvMessage || initial.audioMessage || /^(video|audio)\//.test(initial.documentMessage?.mimetype || "");
+  const id = `${jid}|${msg.key.id}` + (retryStudentMedia ? "|media-v2" : "");
   if (SEEN.has(id)) return;
 
   const when = new Date(Number(msg.messageTimestamp || 0) * 1000);
   if (!msg.messageTimestamp || Date.now() - when.getTime() > MAX_AGE_DAYS * 864e5) return;
 
   const label = await groupLabel(sock, jid);
+  log("📩", groupNames.get(jid), msg.key.fromMe ? "מהרב" : (msg.pushName || "חבר"), Object.keys(msg.message || {}).join(","));
+  if (!label) return; // not one of the lesson groups
+
   const m = unwrap(msg.message);
-  // who is the rabbi: config "rabbi": ["9725XXXXXXXX", ...] (phone and/or lid digits); without it → messages sent from this account
+  const memberVideo = m.videoMessage || m.ptvMessage || (m.documentMessage?.mimetype?.startsWith("video/") ? m.documentMessage : null);
+  const memberAudio = m.audioMessage || (m.documentMessage?.mimetype?.startsWith("audio/") ? m.documentMessage : null);
   const RID = (j) => String(j || "").split("@")[0].split(":")[0];
   const ids = [msg.key.participant, msg.key.participantAlt, msg.key.participantPn, msg.participant].filter(Boolean).map(RID);
   const fromRabbi = CFG.rabbi ? ids.some((x) => CFG.rabbi.map(String).includes(x)) : !!msg.key.fromMe;
   log("👤", msg.pushName || "", ids.join(" / "), fromRabbi ? "(הרב)" : "");
-  const kindOf = m.videoMessage ? "סרטון" : m.audioMessage ? "הקלטה" : m.imageMessage ? "תמונה" : (m.conversation || m.extendedTextMessage) ? "טקסט" : Object.keys(m)[0];
-  if (kindOf !== "טקסט" || fromRabbi) log(`📩 ${kindOf} בקבוצה "${groupNames.get(jid)}" · ${fromRabbi ? "מהרב" : "מ-" + (msg.pushName || "חבר")}${label ? "" : " · (לא קבוצת שיעור – מדלג)"}`);
-  if (!label) return; // not one of the lesson groups
   const week = weekOf(when);
   const taken = when.toISOString();
   const name = fromRabbi ? "" : (msg.pushName || "").trim();
@@ -200,13 +234,19 @@ export async function handle(sock, msg) {
       const r = await api("/api/upload?" + q, { body: buf, type: "audio/ogg" });
       log(r.duplicate ? `= הקלטה כבר באתר (שבת ${week})` : `✓ הקלטה של הרב הועלתה: שבת ${week}`);
     }
-    // ----- a member's voice note -----
-    else if (!fromRabbi && m.audioMessage) {
-      const buf = await download();
-      if (buf.length <= 30 * 1048576) {
-        const q = new URLSearchParams({ week, g: label, n: name, taken, fp: "v:" + fingerprint(buf) });
-        const r = await api("/api/voice?" + q, { body: buf, type: "audio/ogg" });
-        log(r.duplicate ? `= תגובה קולית כבר באתר` : `✓ תגובה קולית: ${label}, שבת ${week}`);
+    // ----- a member's video or voice note -----
+    else if (!fromRabbi && (memberVideo || memberAudio)) {
+      const video = !!memberVideo;
+      const mediaType = video ? "video/mp4" : (memberAudio.mimetype || "audio/ogg").split(";")[0];
+      const original = await download();
+      const parts = await splitMedia(original, video, mediaType);
+      const fp = (video ? "sv:" : "v:") + fingerprint(original);
+      for (let i = 0; i < parts.length; i++) {
+        const q = new URLSearchParams({ week, g: label, n: name, taken,
+          fp: parts.length === 1 ? fp : fp + ":" + (i + 1),
+          part: String(i + 1), parts: String(parts.length) });
+        await api("/api/voice?" + q, { body: parts[i], type: mediaType });
+        log("✓ תגובת " + (video ? "וידאו" : "קול") + ": " + label + ", שבת " + week + " · חלק " + (i + 1) + "/" + parts.length);
       }
     }
     // ----- a member's written answer -----
@@ -243,7 +283,8 @@ async function start() {
     version,
     logger: pino({ level: "silent" }),
     browser: Browsers.ubuntu("Rabbi Danon site"),
-    syncFullHistory: false,
+    syncFullHistory: true,
+    shouldSyncHistoryMessage: () => true,
     markOnlineOnConnect: false, // don't disturb notifications on the phone
   });
   sock.ev.on("creds.update", saveCreds);
@@ -259,12 +300,29 @@ async function start() {
         log("המכשיר נותק מהוואטסאפ. מחקו את התיקייה auth והפעילו מחדש כדי לסרוק שוב.");
         process.exit(1);
       }
-      log("החיבור נסגר – מתחבר מחדש…", "קוד:", code, lastDisconnect?.error?.message || "");
+      log("החיבור נסגר – מתחבר מחדש…");
       setTimeout(start, 5000);
     }
   });
-  sock.ev.on("messages.upsert", async ({ messages }) => {
-    for (const msg of messages) await handle(sock, msg);
+  // Serialize live and historical messages so SEEN can prevent duplicates.
+  let messageQueue = Promise.resolve();
+  const enqueueMessages = (messages = []) => {
+    const cutoff = Date.now() - MAX_AGE_DAYS * 864e5;
+    const candidates = messages.filter((msg) =>
+      msg.key?.remoteJid?.endsWith("@g.us") && msg.message &&
+      Number(msg.messageTimestamp || 0) * 1000 >= cutoff
+    ).sort((a, b) => Number(a.messageTimestamp || 0) - Number(b.messageTimestamp || 0));
+    messageQueue = messageQueue.then(async () => {
+      for (const msg of candidates) await handle(sock, msg);
+    }).catch((e) => log("שגיאה בתור ההודעות:", e.message));
+    return messageQueue;
+  };
+  sock.ev.on("messaging-history.set", ({ messages = [] }) => {
+    log("סנכרון היסטוריה: התקבלו", messages.length, "הודעות; מסנן לפי קבוצות השיעור ומגבלת הימים");
+    void enqueueMessages(messages);
+  });
+  sock.ev.on("messages.upsert", ({ messages = [] }) => {
+    void enqueueMessages(messages);
   });
 }
 
