@@ -11,7 +11,7 @@ process.env.TZ = "Asia/Jerusalem";
 import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
-import { execFile } from "node:child_process";
+import { execFile, spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import os from "node:os";
 import pino from "pino";
@@ -326,4 +326,22 @@ async function start() {
   });
 }
 
-if (!process.env.BOT_NO_START) start();
+// The existing always-on service supervises the archive worker too. This is
+// independent of WhatsApp reconnects and of the user's desktop.
+function startKolHalashon() {
+  const worker = spawn("python3", ["-u", path.join(DIR, "kolhalashon_sync.py"), "--all", "--loop"], {
+    cwd: DIR, stdio: "inherit",
+  });
+  const stop = () => worker.kill("SIGTERM");
+  process.once("exit", stop);
+  worker.once("error", () => log("קול הלשון: לא ניתן להפעיל תהליך ייבוא"));
+  worker.once("close", () => {
+    process.removeListener("exit", stop);
+    log("קול הלשון: התהליך הסתיים; ניסיון חוזר בעוד 30 דקות");
+    setTimeout(startKolHalashon, 30 * 60 * 1000);
+  });
+}
+if (!process.env.BOT_NO_START) {
+  startKolHalashon();
+  start();
+}
