@@ -16,6 +16,7 @@ import subprocess
 import sys
 import tempfile
 import urllib.parse
+import urllib.error
 import urllib.request
 
 LIMIT = 95_000_000
@@ -110,6 +111,7 @@ def run(manifest, config_path):
     if urllib.parse.urlsplit(site).scheme != 'https':
         raise ValueError('Destination must use HTTPS')
     password = config['password']
+    print('Reading destination index', flush=True)
     with urllib.request.urlopen(site + '/api/clips', timeout=60) as response:
         existing = {c.get('fp') for c in json.load(response).get('clips', [])}
     for item in items:
@@ -123,6 +125,7 @@ def run(manifest, config_path):
             with tempfile.TemporaryDirectory(prefix='khl-import-') as tmp:
                 folder = Path(tmp)
                 source = folder / ('source.mp4' if media['kind'] == 'video' else 'source.mp3')
+                print(f"Downloading {item['id']} {media['kind']}", flush=True)
                 download(media['url'], source)
                 parts = list(media_parts(source, folder))
                 for number, (file, video) in enumerate(parts, 1):
@@ -138,6 +141,7 @@ def run(manifest, config_path):
                         sourceId=str(item['id']), part=number, parts=len(parts)))
                     request = urllib.request.Request(site+'/api/upload?'+params,
                         data=file.read_bytes(), headers={'x-admin-password': password, 'Content-Type': content_type}, method='POST')
+                    print(f"Uploading {item['id']} part {number}/{len(parts)}", flush=True)
                     with urllib.request.urlopen(request, timeout=300) as response:
                         result = json.load(response)
                     if not result.get('ok'):
@@ -158,7 +162,8 @@ def main():
         run(manifest, args.config)
     except Exception as exc:
         # HTTP/ffmpeg exceptions may contain signed source URLs. Log only a safe category.
-        print(f'Import failed ({type(exc).__name__}); refresh source URLs and retry.', file=sys.stderr)
+        status = f' HTTP {exc.code} at {urllib.parse.urlsplit(exc.url).hostname}' if isinstance(exc, urllib.error.HTTPError) else ''
+        print(f'Import failed ({type(exc).__name__}{status}); refresh source URLs and retry.', file=sys.stderr)
         return 1
     return 0
 
