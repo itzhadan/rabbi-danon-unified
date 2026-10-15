@@ -58,10 +58,10 @@ def download(url, dest):
 
 def probe(file):
     result = subprocess.run(['ffprobe', '-v', 'error', '-show_entries',
-                             'format=duration:stream=codec_type', '-of', 'json', str(file)],
+                             'format=duration:stream=codec_type:stream_disposition=attached_pic', '-of', 'json', str(file)],
                             capture_output=True, check=True, timeout=60)
     data = json.loads(result.stdout)
-    return float(data['format']['duration']), any(s['codec_type'] == 'video' for s in data['streams'])
+    return float(data['format']['duration']), any(s['codec_type'] == 'video' and not s.get('disposition', {}).get('attached_pic') for s in data['streams'])
 
 
 def media_parts(source, folder):
@@ -126,7 +126,7 @@ def run(manifest, config_path):
             if marker.exists():
                 print(f"Already imported {item['id']} {media['kind']}", flush=True)
                 continue
-            with tempfile.TemporaryDirectory(prefix='khl-import-') as tmp:
+            with tempfile.TemporaryDirectory(prefix='khl-import-', ignore_cleanup_errors=True) as tmp:
                 folder = Path(tmp)
                 source = folder / ('source.mp4' if media['kind'] == 'video' else 'source.mp3')
                 print(f"Downloading {item['id']} {media['kind']}", flush=True)

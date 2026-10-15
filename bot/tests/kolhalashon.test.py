@@ -15,6 +15,15 @@ spec.loader.exec_module(khl)
 
 
 class ImportTests(unittest.TestCase):
+    def test_audio_cover_art_is_not_video(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            audio, cover, tagged = root/'audio.mp3', root/'cover.png', root/'tagged.mp3'
+            subprocess.run(['ffmpeg','-v','error','-f','lavfi','-i','sine=duration=1',str(audio)],check=True)
+            subprocess.run(['ffmpeg','-v','error','-f','lavfi','-i','color=blue:s=32x32','-frames:v','1','-threads','1',str(cover)],check=True)
+            subprocess.run(['ffmpeg','-v','error','-i',str(audio),'-i',str(cover),'-map','0:a','-map','1:v','-c','copy','-disposition:v','attached_pic',str(tagged)],check=True)
+            self.assertFalse(khl.probe(tagged)[1])
+
     def test_rejects_unrelated_hosts(self):
         for url in ['http://media-cdn.kolhalashon.com/a.mp3', 'https://evil.test/a.mp3',
                     'https://media-cdn.kolhalashon.com@evil.test/a.mp3']:
