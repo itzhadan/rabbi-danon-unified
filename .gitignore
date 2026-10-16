@@ -10,3 +10,8 @@
 __pycache__/
 *.pyc
 .khl-*.done
+**/auth/
+**/auth-backup-*/
+bot/config.json
+bot/seen.json
+.khl-sync.lock
