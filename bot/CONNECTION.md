@@ -3,7 +3,7 @@
 הבוט פועל במשימת Always-on של PythonAnywhere בחשבון `walev`:
 
 ```sh
-cd /home/walev/rabbi-wa-bot && /home/walev/.nvm/versions/node/v22.23.3/bin/node bot.mjs
+cd /home/walev/rabbi-wa-bot && exec /home/walev/.nvm/versions/node/v22.23.3/bin/node bot.mjs
 ```
 
 אם החיבור נותק ולא חוזר, משביתים את המשימה ומוודאים שהיא נעצרה. מעבירים את `auth` לתיקיית גיבוי מקומית מוגנת, בלי להציג או להעתיק את תוכנה. מפעילים את הבוט במסוף, סורקים את הקוד בוואטסאפ דרך מכשירים מקושרים וממתינים להודעת `מחובר לוואטסאפ`.
