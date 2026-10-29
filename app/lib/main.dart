@@ -69,6 +69,13 @@ class _SitePageState extends State<SitePage> {
     super.initState();
     _controller = _createController();
     _controller.loadRequest(Uri.parse(kHomeUrl));
+    // Safety net: on some devices the page never reports "finished",
+    // so the splash would stay forever. Show the page after a while anyway.
+    Future<void>.delayed(const Duration(seconds: 8), () {
+      if (mounted && !_firstLoadDone) {
+        setState(() => _firstLoadDone = true);
+      }
+    });
   }
 
   WebViewController _createController() {
@@ -236,7 +243,8 @@ class _SitePageState extends State<SitePage> {
 }
 
 // מספר הגרסה מגיע מהבנייה ב-GitHub Actions (--dart-define=APP_VERSION=1.0.N)
-const String kAppVersion = String.fromEnvironment('APP_VERSION', defaultValue: 'פיתוח');
+const String kAppVersion =
+    String.fromEnvironment('APP_VERSION', defaultValue: 'פיתוח');
 
 class _Splash extends StatelessWidget {
   const _Splash();
